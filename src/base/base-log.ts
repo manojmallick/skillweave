@@ -4,7 +4,7 @@
 
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import type { ExecutionClass } from "../types.js";
+import type { ConfidenceBand, ExecutionClass } from "../types.js";
 
 const TRACE_DIR = "traces";
 
@@ -16,7 +16,9 @@ export interface TraceRow {
   cost: number;
   judge_score: number | null;
   confidence: number | null;
-  status: "success" | "halted";
+  confidence_band?: ConfidenceBand | null;
+  attempt?: number;
+  status: "success" | "retry" | "halted";
   summary: string;
   detail?: string[];
 }
@@ -49,16 +51,22 @@ export class Tracer {
     console.log(line);
 
     for (const r of this.rows) {
-      const mark = r.status === "success" ? "✓" : "✗";
+      const mark = r.status === "success" ? "✓" : r.status === "retry" ? "↻" : "✗";
       const cls = r.class.padEnd(13);
       const cost = `$${r.cost.toFixed(4)}`;
       const ms = `${r.duration_ms}ms`.padStart(7);
-      console.log(`${mark} ${r.skill.padEnd(17)} ${cls} ${r.summary.padEnd(34)} ${ms}  ${cost}`);
+      const suffix =
+        r.status === "success" && (r.attempt ?? 1) > 1 ? ` (recovered on attempt ${r.attempt})` : "";
+      console.log(
+        `${mark} ${r.skill.padEnd(17)} ${cls} ${(r.summary + suffix).padEnd(34)} ${ms}  ${cost}`,
+      );
       if (r.judge_score !== null) {
-        const conf = r.confidence !== null ? `  confidence: ${r.confidence.toFixed(2)}` : "";
-        console.log(`  └─ judge: ${r.judge_score.toFixed(2)}${conf}`);
+        console.log(`  └─ judge: ${r.judge_score.toFixed(2)}`);
       }
-      if (r.status === "halted" && r.detail) {
+      if (r.status === "success" && r.confidence_band === "review") {
+        console.log(`  └─ flagged: confidence ${r.confidence?.toFixed(2)} in review band`);
+      }
+      if ((r.status === "retry" || r.status === "halted") && r.detail) {
         for (const d of r.detail) console.log(`  └─ ${d}`);
       }
     }
@@ -66,11 +74,15 @@ export class Tracer {
     console.log(line);
     const totalMs = this.rows.reduce((a, r) => a + r.duration_ms, 0);
     const totalCost = this.rows.reduce((a, r) => a + r.cost, 0);
+    const retries = this.rows.filter((r) => r.status === "retry").length;
     if (halted) {
       console.log(`STATUS: HALTED at ${halted.skill}`);
       console.log(`cost so far: $${totalCost.toFixed(4)}`);
     } else {
-      console.log(`STATUS: SUCCESS   total: ${totalMs}ms   cost: $${totalCost.toFixed(4)}`);
+      const retryNote = retries > 0 ? `   retries: ${retries}` : "";
+      console.log(
+        `STATUS: SUCCESS   total: ${totalMs}ms   cost: $${totalCost.toFixed(4)}${retryNote}`,
+      );
     }
     console.log(`trace: ./${this.tracePath}\n`);
   }

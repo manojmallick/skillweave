@@ -1,17 +1,21 @@
-// SkillWeave v0.1.0 prototype — document-grounding chain.
-// Proves SigMap's ask → validate → judge → learn pattern generalises to documents:
-//   parse-input → validate-coverage → boundary-judge → memory-update
+// SkillWeave v0.2.0 — document-grounding chain with the reliability layer.
+// Proves SigMap's ask → validate → judge → learn pattern generalises to documents,
+// now with confidence routing, an auto-inserted boundary judge, and
+// retry-with-negative-context at the probabilistic boundary:
+//   parse-input → validate-coverage → extract-highlights (judged) → memory-update
 //
 // Usage:
 //   npm start                         run the chain on the default document
 //   npm start -- --doc <path>         run on a document file
-//   npm start -- --inject hallucination   inject an ungrounded block (judge halts)
-//   npm start -- --inject coverage        run on too-thin input (coverage halts)
+//   npm start -- --inject coverage        too-thin input → coverage assertion HALTS (deterministic)
+//   npm start -- --inject lowconf         low-confidence highlight → confidence routing RETRIES → recovers
+//   npm start -- --inject hallucination   ungrounded highlight → judge RETRIES → recovers
+//   npm start -- --inject persistent      always-ungrounded → retries exhausted → HALTS
 
 import { readFileSync } from "node:fs";
 import { judgeExecutorLabel } from "./judge.js";
 import { runPipeline } from "./orchestrator.js";
-import { boundaryJudge } from "./skills/boundary-judge.js";
+import { extractHighlights } from "./skills/extract-highlights.js";
 import { memoryUpdate } from "./skills/memory-update.js";
 import { parseInput } from "./skills/parse-input.js";
 import { validateCoverage } from "./skills/validate-coverage.js";
@@ -33,6 +37,8 @@ begin a public beta of the registry.`;
 
 const THIN_DOC = "# Note\nok";
 
+const INJECT_MODES = ["coverage", "lowconf", "hallucination", "persistent"] as const;
+
 function parseArgs(argv: string[]): { doc?: string; inject: State["_meta"]["inject"] } {
   let doc: string | undefined;
   let inject: State["_meta"]["inject"] = "none";
@@ -40,9 +46,10 @@ function parseArgs(argv: string[]): { doc?: string; inject: State["_meta"]["inje
     if (argv[i] === "--doc") doc = argv[++i];
     else if (argv[i] === "--inject") {
       const v = argv[++i];
-      if (v === "hallucination" || v === "coverage") inject = v;
-      else {
-        console.error(`unknown --inject value: ${v}`);
+      if ((INJECT_MODES as readonly string[]).includes(v ?? "")) {
+        inject = v as State["_meta"]["inject"];
+      } else {
+        console.error(`unknown --inject value: ${v} (expected ${INJECT_MODES.join(" | ")})`);
         process.exit(2);
       }
     }
@@ -51,10 +58,10 @@ function parseArgs(argv: string[]): { doc?: string; inject: State["_meta"]["inje
 }
 
 const pipeline: Pipeline = {
-  name: "document-grounding-prototype",
-  version: "0.1.0",
+  name: "document-grounding",
+  version: "0.2.0",
   domain: "documents",
-  steps: [parseInput, validateCoverage, boundaryJudge, memoryUpdate],
+  steps: [parseInput, validateCoverage, extractHighlights, memoryUpdate],
 };
 
 async function main(): Promise<void> {
