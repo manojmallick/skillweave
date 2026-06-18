@@ -14,7 +14,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { GoogleGenAI, Type } from "@google/genai";
 import OpenAI from "openai";
-import type { ContentBlock, JudgeVerdict } from "./types.js";
+import type { ContentBlock, GoldenAnchor, JudgeVerdict } from "./types.js";
 
 const ANTHROPIC_MODEL = "claude-opus-4-8";
 const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
@@ -26,6 +26,7 @@ export interface JudgeInput {
   raw_input: string;
   content_blocks: ContentBlock[];
   threshold: number;
+  golden_anchors?: GoldenAnchor[];
 }
 
 /** Estimated cost of the most recent LLM judge call, in USD. */
@@ -98,7 +99,7 @@ function buildPrompt(input: JudgeInput): string {
   const blocks = input.content_blocks
     .map((b, i) => `[${i}] (${b.type}) ${b.text}`)
     .join("\n");
-  return [
+  const lines = [
     "You are a groundedness judge. Given a SOURCE document and a set of parsed",
     "CONTENT BLOCKS extracted from it, score how faithfully the blocks are grounded",
     "in the source: 1.0 = every block's content appears in the source with nothing",
@@ -107,13 +108,16 @@ function buildPrompt(input: JudgeInput): string {
     "",
     `Pass threshold: ${input.threshold}. Set passed=true only if score >= threshold.`,
     "Reply as JSON: {score, passed, confidence, failure_reason}.",
-    "",
-    "=== SOURCE ===",
-    input.raw_input,
-    "",
-    "=== CONTENT BLOCKS ===",
-    blocks,
-  ].join("\n");
+  ];
+  if (input.golden_anchors?.length) {
+    lines.push("", "=== GOLDEN ANCHORS (worked examples of acceptable output) ===");
+    input.golden_anchors.forEach((a, i) => {
+      lines.push(`Anchor ${i + 1} input:  ${JSON.stringify(a.input)}`);
+      lines.push(`Anchor ${i + 1} output: ${JSON.stringify(a.output)}`);
+    });
+  }
+  lines.push("", "=== SOURCE ===", input.raw_input, "", "=== CONTENT BLOCKS ===", blocks);
+  return lines.join("\n");
 }
 
 const ANTHROPIC_SCHEMA = {

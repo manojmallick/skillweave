@@ -1,0 +1,50 @@
+# document-grounding.pipeline.yaml
+# SkillWeave v0.2.0 — document-grounding chain with the reliability layer
+# (human-readable contract). The TypeScript runtime in src/ is the executable form.
+
+name: document-grounding
+version: 0.2.0
+domain: documents
+description: "ask -> validate -> judge -> learn, with confidence routing + retry"
+
+state_schema: document-grounding-state@0.2
+
+executor:
+  primary: anthropic/claude-opus-4-8
+  alternates: [google/gemini-2.5-flash, openai/gpt-4o-mini]
+  fallback: heuristic            # offline groundedness scorer when no API key
+
+checkpoint: after_each_skill
+on_failure: halt_and_expose
+
+# Reliability layer (v0.2.0) — applied to probabilistic skills only.
+reliability:
+  confidence_routing:
+    high: ">= 0.85 proceed"
+    review: "0.65 - 0.85 proceed and flag in trace"
+    low: "< 0.65 retry"
+  retry_with_negative_context: true
+  retry_budget: 2
+  auto_judge_at_probabilistic_boundary: true
+
+pipeline:
+  - skill: parse-input           # maps to: sigmap ask
+    execution_class: deterministic
+    asserts: ["at least one content block is produced"]
+
+  - skill: validate-coverage     # maps to: sigmap validate
+    execution_class: deterministic
+    depends_on: parse-input
+    asserts: ["coverage_score >= 0.70"]
+
+  - skill: extract-highlights    # probabilistic boundary — judged + routed + retried
+    execution_class: probabilistic
+    depends_on: validate-coverage
+    confidence_threshold: 0.80    # auto-judge pass threshold
+    retries: 2
+    golden_anchors: 1
+
+  - skill: memory-update         # maps to: sigmap learn
+    execution_class: deterministic
+    depends_on: extract-highlights
+    writes: .context/skillweave-memory.ndjson
