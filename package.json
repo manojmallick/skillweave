@@ -8,7 +8,10 @@
     "start": "tsx src/run.ts",
     "chain": "tsx src/run.ts",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test test/*.test.ts"
+    "test": "node --import tsx --test test/*.test.ts",
+    "sync-versions": "node scripts/sync-versions.mjs",
+    "docs:dev": "npm --prefix docs-vp run docs:dev",
+    "docs:build": "npm --prefix docs-vp run docs:build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",

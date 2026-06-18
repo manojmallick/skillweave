@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "stage": "reliability-layer",
+  "roadmap_target": "v0.3.0 — production runtime (CLI + YAML pipeline execution)",
+  "stats": {
+    "base_skills": 3,
+    "domain_skills": 4,
+    "judge_providers": 3,
+    "tests": 9,
+    "npm_runtime_deps": 3
+  },
+  "judge_providers": [
+    "anthropic",
+    "gemini",
+    "openai"
+  ],
+  "notes": "Metrics (hit@5, token reduction, task success) are not yet measured for SkillWeave — no benchmark harness exists. This file carries version + structural stats only; do not add fabricated metric numbers."
+}

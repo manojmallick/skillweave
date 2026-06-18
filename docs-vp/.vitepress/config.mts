@@ -1,0 +1,68 @@
+import { defineConfig } from "vitepress";
+
+export default defineConfig({
+  base: "/",
+  title: "SkillWeave",
+  description:
+    "An open standard and runtime for composing LLM tasks from small, focused, testable micro-skills.",
+
+  appearance: "dark",
+
+  head: [
+    ["meta", { property: "og:site_name", content: "SkillWeave" }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+  ],
+
+  themeConfig: {
+    siteTitle: "skillweave",
+    nav: [
+      { text: "Docs", link: "/guide/quick-start", activeMatch: "/guide/" },
+      { text: "Roadmap", link: "/guide/roadmap" },
+      { text: "GitHub", link: "https://github.com/manojmallick/skillweave" },
+    ],
+
+    sidebar: [
+      {
+        text: "Getting started",
+        items: [
+          { text: "Quick start", link: "/guide/quick-start" },
+          { text: "Architecture", link: "/guide/architecture" },
+        ],
+      },
+      {
+        text: "Concepts",
+        items: [
+          { text: "Primitives", link: "/guide/primitives" },
+          { text: "Skill contract", link: "/guide/skill-contract" },
+          { text: "Reliability layer", link: "/guide/reliability" },
+        ],
+      },
+      {
+        text: "Reference",
+        items: [
+          { text: "Multi-LLM judge", link: "/guide/providers" },
+          { text: "CLI", link: "/guide/cli" },
+        ],
+      },
+      {
+        text: "More",
+        items: [{ text: "Roadmap", link: "/guide/roadmap" }],
+      },
+    ],
+
+    search: { provider: "local" },
+
+    socialLinks: [{ icon: "github", link: "https://github.com/manojmallick/skillweave" }],
+
+    footer: {
+      message: "MIT License",
+      copyright:
+        'Copyright © 2026 <a href="https://github.com/manojmallick" target="_blank" rel="noopener">LearnHubPlay BV</a> · Made in Amsterdam 🇳🇱',
+    },
+
+    editLink: {
+      pattern: "https://github.com/manojmallick/skillweave/edit/main/docs-vp/:path",
+      text: "Edit this page on GitHub",
+    },
+  },
+});

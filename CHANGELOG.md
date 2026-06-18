@@ -16,6 +16,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `extract-highlights` probabilistic skill that exercises the reliability layer end to end (#1).
 - `npm test` — `node:test` suite (9 tests): confidence bands, retry-improves-output for both confidence- and judge-triggered failures, deterministic zero-overhead, and the judge catching ungrounded output (#1).
 - `--inject lowconf` and `--inject persistent` reliability demo modes (#1).
+- Documentation site (VitePress) under `docs-vp/`, plus `version.json`, `src/version.ts` (single version source), and `scripts/sync-versions.mjs` release tooling.
+- Community files: `CONTRIBUTING.md`, `CONTRIBUTORS.md`, `SECURITY.md`.
 
 ### Changed
 - Execution summary and NDJSON trace now record attempt count and confidence band (#1).
