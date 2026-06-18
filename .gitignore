@@ -1,0 +1,7 @@
+node_modules/
+traces/
+.context/
+*.log
+.env
+.claude/
+CLAUDE*.md

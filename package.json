@@ -1,0 +1,22 @@
+{
+  "name": "skillweave",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SkillWeave v0.1.0 prototype chain — parse-input → validate-coverage → boundary-judge → memory-update",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/run.ts",
+    "chain": "tsx src/run.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "@google/genai": "^1.0.0",
+    "openai": "^4.77.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
