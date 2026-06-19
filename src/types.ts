@@ -1,5 +1,7 @@
-// SkillWeave v0.1.0 — core primitive types
-// SKILL · PIPELINE · STATE · ASSERTION (the 4 prototype primitives)
+// SkillWeave — core primitive types
+// SKILL · PIPELINE · STATE · ASSERTION
+
+import type { ExecutorSpec } from "./providers/types.js";
 
 export type ExecutionClass = "deterministic" | "probabilistic" | "tool";
 
@@ -33,7 +35,7 @@ export interface JudgeVerdict {
   passed: boolean;
   confidence: number; // 0.0 – 1.0
   failure_reason: string | null;
-  source: "anthropic" | "gemini" | "openai" | "heuristic";
+  source: "anthropic" | "gemini" | "openai" | "ollama" | "heuristic";
 }
 
 /** Memory write summary (output of memory-update). */
@@ -135,4 +137,6 @@ export interface Pipeline {
   version: string;
   domain: string;
   steps: Skill[];
+  /** Optional provider executor (primary + fallback) for this pipeline. */
+  executor?: ExecutorSpec;
 }

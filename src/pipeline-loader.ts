@@ -40,6 +40,13 @@ export function validatePipelineDoc(doc: unknown): ValidationIssue[] {
     if (d[field] == null) error(`missing top-level field: ${field}`);
   }
 
+  if (d.executor != null) {
+    const ex = d.executor as Record<string, unknown>;
+    if (typeof ex !== "object" || typeof ex.primary !== "string") {
+      error("executor: must declare a string `primary` provider");
+    }
+  }
+
   if (!Array.isArray(d.pipeline) || d.pipeline.length === 0) {
     error("pipeline: must be a non-empty list of steps");
     return issues;
@@ -111,10 +118,20 @@ export function loadPipeline(path: string): Pipeline {
     return Object.keys(overrides).length ? { ...base, ...overrides } : base;
   });
 
+  const ex = doc.executor as Record<string, unknown> | undefined;
+  const executor = ex
+    ? {
+        primary: String(ex.primary),
+        fallback: ex.fallback as string | string[] | undefined,
+        requires: ex.requires as string[] | undefined,
+      }
+    : undefined;
+
   return {
     name: String(doc.name),
     version: String(doc.version),
     domain: String(doc.domain),
     steps,
+    ...(executor ? { executor } : {}),
   };
 }

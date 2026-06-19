@@ -9,6 +9,7 @@ import {
   SigMapCostAdapter,
   SigMapObserveAdapter,
 } from "./adapters/index.js";
+import { checkNeutralLanguage, loadProfile } from "./providers/index.js";
 import { AssertionError, runAssertions } from "./base/base-assert.js";
 import { applyWrites } from "./base/base-io.js";
 import { judgeExecutorLabel } from "./judge.js";
@@ -57,6 +58,8 @@ Usage:
   skillweave health
   skillweave sigmap context [--query <q>]
   skillweave sigmap cost [--suggest-tool <task>]
+  skillweave providers
+  skillweave neutral <file>
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).`;
@@ -311,6 +314,40 @@ function cmdSigmap(rest: string[]): number {
   }
 }
 
+function cmdProviders(): number {
+  for (const provider of ["anthropic", "google", "openai", "ollama"]) {
+    console.log(provider);
+    for (const m of loadProfile(provider)) {
+      const so = m.supports_structured_output ? "structured" : "no-structured";
+      console.log(
+        `  ${m.id.padEnd(20)} ${m.tier.padEnd(9)} ${so.padEnd(14)} $${m.cost_per_1k_input}/$${m.cost_per_1k_output} per 1k`,
+      );
+    }
+  }
+  return 0;
+}
+
+function cmdNeutral(rest: string[]): number {
+  const { positionals } = parseArgs(rest);
+  const file = positionals[0];
+  if (!file) {
+    console.error("neutral: missing <file>");
+    return 2;
+  }
+  if (!existsSync(file)) {
+    console.error(`neutral: file not found: ${file}`);
+    return 1;
+  }
+  const issues = checkNeutralLanguage(readFileSync(file, "utf8"));
+  if (issues.length === 0) {
+    console.log(`✓ ${file}: model-neutral`);
+    return 0;
+  }
+  for (const i of issues) console.log(`  [${i.rule}] "${i.match}" — ${i.message}`);
+  console.log(`✗ ${file}: ${issues.length} non-neutral reference(s)`);
+  return 1;
+}
+
 export async function cli(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   switch (cmd) {
@@ -330,6 +367,10 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdHealth();
     case "sigmap":
       return cmdSigmap(rest);
+    case "providers":
+      return cmdProviders();
+    case "neutral":
+      return cmdNeutral(rest);
     case "version":
     case "--version":
     case "-v":

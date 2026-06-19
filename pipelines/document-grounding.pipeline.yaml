@@ -11,8 +11,9 @@ state_schema: document-grounding-state@0.2
 
 executor:
   primary: anthropic/claude-opus-4-8
-  alternates: [google/gemini-2.5-flash, openai/gpt-4o-mini]
-  fallback: heuristic            # offline groundedness scorer when no API key
+  fallback: [google/gemini-2.5-flash, openai/gpt-4o-mini]
+  requires: [structured_output]
+  # When no provider key is set the judge uses the offline heuristic scorer.
 
 checkpoint: after_each_skill
 on_failure: halt_and_expose
