@@ -13,6 +13,7 @@
 //   npm start -- --inject persistent      always-ungrounded → retries exhausted → HALTS
 
 import { readFileSync } from "node:fs";
+import { SigMapObserveAdapter } from "./adapters/index.js";
 import { judgeExecutorLabel } from "./judge.js";
 import { runPipeline } from "./orchestrator.js";
 import { extractHighlights } from "./skills/extract-highlights.js";
@@ -63,7 +64,9 @@ async function main(): Promise<void> {
     _meta: { pipeline: pipeline.name, run_id: runId, inject, checkpoints: [] },
   };
 
-  const outcome = await runPipeline(pipeline, state, executor);
+  const outcome = await runPipeline(pipeline, state, executor, {
+    observe: new SigMapObserveAdapter(),
+  });
 
   if (outcome.status === "halted") {
     console.log(`Fix: address the halt at ${outcome.haltedAt}, then re-run.`);

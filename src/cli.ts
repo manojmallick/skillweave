@@ -4,6 +4,11 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import {
+  SigMapContextAdapter,
+  SigMapCostAdapter,
+  SigMapObserveAdapter,
+} from "./adapters/index.js";
 import { AssertionError, runAssertions } from "./base/base-assert.js";
 import { applyWrites } from "./base/base-io.js";
 import { judgeExecutorLabel } from "./judge.js";
@@ -49,6 +54,9 @@ Usage:
   skillweave list [skills|pipelines]
   skillweave trace [last]
   skillweave new pipeline|skill <name>
+  skillweave health
+  skillweave sigmap context [--query <q>]
+  skillweave sigmap cost [--suggest-tool <task>]
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).`;
@@ -85,7 +93,9 @@ async function cmdRun(rest: string[]): Promise<number> {
         : SAMPLE_DOC;
 
   const state = makeState(inject, raw);
-  const outcome = await runPipeline(pipeline, state, judgeExecutorLabel());
+  const outcome = await runPipeline(pipeline, state, judgeExecutorLabel(), {
+    observe: new SigMapObserveAdapter(),
+  });
   if (outcome.status === "halted") {
     console.log(`Fix: address the halt at ${outcome.haltedAt}, then re-run.`);
     return 1;
@@ -258,6 +268,49 @@ function cmdNew(rest: string[]): number {
   return 0;
 }
 
+function cmdHealth(): number {
+  const h = new SigMapObserveAdapter().health();
+  console.log(`health: ${h.grade} (${h.score}/100)`);
+  console.log(`  runs            : ${h.components.runs}`);
+  console.log(`  success rate    : ${(h.components.success_rate * 100).toFixed(0)}%`);
+  console.log(`  judge pass rate : ${(h.components.judge_pass_rate * 100).toFixed(0)}%`);
+  console.log(`  low-retry rate  : ${(h.components.low_retry_rate * 100).toFixed(0)}%`);
+  return 0;
+}
+
+function cmdSigmap(rest: string[]): number {
+  const { positionals, flags } = parseArgs(rest);
+  const sub = positionals[0];
+  switch (sub) {
+    case "context": {
+      const ctx = new SigMapContextAdapter().load(
+        typeof flags.query === "string" ? flags.query : undefined,
+      );
+      if (!ctx.present) {
+        console.log(`no SigMap context at ${ctx.source} (run \`sigmap ask\` to generate it)`);
+        return 0;
+      }
+      console.log(`source: ${ctx.source}  (~${ctx.approx_tokens} tokens)`);
+      console.log(ctx.content.split("\n").slice(0, 20).join("\n"));
+      return 0;
+    }
+    case "cost": {
+      const cost = new SigMapCostAdapter();
+      if (typeof flags["suggest-tool"] === "string") {
+        console.log(`tier: ${cost.routeModel(flags["suggest-tool"])}`);
+      } else {
+        console.log(`total cost across traces: $${cost.totalCost().toFixed(4)}`);
+      }
+      return 0;
+    }
+    case "health":
+      return cmdHealth();
+    default:
+      console.error("sigmap: usage — skillweave sigmap context|cost|health");
+      return 2;
+  }
+}
+
 export async function cli(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   switch (cmd) {
@@ -273,6 +326,10 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdTrace();
     case "new":
       return cmdNew(rest);
+    case "health":
+      return cmdHealth();
+    case "sigmap":
+      return cmdSigmap(rest);
     case "version":
     case "--version":
     case "-v":

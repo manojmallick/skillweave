@@ -1,0 +1,3 @@
+{"skill":"extract-highlights","status":"retry","attempt":1,"judge_score":0.5,"cost":0}
+{"skill":"extract-highlights","status":"retry","attempt":2,"judge_score":0.5,"cost":0}
+{"skill":"extract-highlights","status":"halted","attempt":3,"judge_score":0.5,"cost":0}
