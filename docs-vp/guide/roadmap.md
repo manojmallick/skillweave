@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 36 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 4 provider adapters · 10 CLI commands · 4 runtime deps
+**Stats:** 43 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 11 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -62,16 +62,21 @@ an executor that auto-selects a model by tier + required capabilities and runs
 routes its LLM call through the layer.
 
 **Tags:** LLMProviderAdapter · provider profiles · primary→fallback executor · neutral-language validator
-**Impact:** 36-test `node:test` suite; the same pipeline runs on any configured provider, with capability-driven model selection and automatic fallback.
+**Impact:** the same pipeline runs on any configured provider, with capability-driven model selection and automatic fallback.
+
+### v0.6.0 — Schema governance ✓
+
+A [versioned schema registry](/guide/schemas) (`schemas/registry/<name>@<version>.json`),
+`input_schema` / `output_schema` pins on skills, a schema differ (additive vs breaking),
+an additive-only rule across same-major versions, and `skillweave check-schemas` to catch
+breaking changes before they ship.
+
+**Tags:** versioned registry · schema pins · diffSchemas · additive-only · check-schemas
+**Impact:** 43-test `node:test` suite; schema changes are governed — a removed/retyped/newly-required field within a major fails the gate.
 
 ## Planned
 
-### v0.6.0 — Schema governance → current milestone
-
-Semantic versioning on all schemas, additive-only enforcement, and a `check-schemas`
-command that catches breaking changes before execution.
-
-### v0.7.0 — Security model
+### v0.7.0 — Security model → current milestone
 
 Per-skill permission scoping, sandboxed execution for community/experimental skills, and
 SigMap-inherited secret scanning in the pipeline.
@@ -93,4 +98,4 @@ platform (alerts, replay, A/B skill testing).
 
 ---
 
-**Current milestone:** v0.6.0 — schema governance (versioned schemas, additive-only rule, `check-schemas`).
+**Current milestone:** v0.7.0 — security model (per-skill permission scoping, sandboxed execution, secret scan).

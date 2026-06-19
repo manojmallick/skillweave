@@ -6,6 +6,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-06-19
+
+### Added
+- Versioned schema registry (#13) at `schemas/registry/<name>@<version>.json`, with a loader (`parseRef` / `loadSchema` / `listVersions`).
+- Schema differ — `diffSchemas(from, to)` classifies a change as additive (compatible) or breaking (removed / retyped / newly-required field), with a structured diff.
+- Additive-only rule enforced across consecutive versions of a schema within the same major.
+- Skill contract pins — `input_schema` / `output_schema` (`name@version`); the four reference skills pin to registry schemas.
+- CLI: `skillweave check-schemas` — verifies every schema parses, every pin resolves, and the additive-only rule holds; exits non-zero on a breaking change within a major.
+
 ## [0.5.0] — 2026-06-19
 
 ### Added

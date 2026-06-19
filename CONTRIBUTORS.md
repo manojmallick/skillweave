@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v0.6.0)
+
+- Schema governance — versioned registry, schema differ, additive-only rule, skill schema pins, and `skillweave check-schemas` (#13)
+
 ## Recent Contributors (v0.5.0)
 
 - Multi-LLM provider layer — `LLMProviderAdapter` + anthropic/google/openai/ollama adapters, capability profiles, primary→fallback executor, and the Neutral Skill Language validator (#10)
