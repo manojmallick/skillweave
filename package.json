@@ -1,6 +1,6 @@
 {
   "name": "skillweave",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "SkillWeave v0.1.0 prototype chain — parse-input → validate-coverage → boundary-judge → memory-update",
   "type": "module",
@@ -8,7 +8,11 @@
     "start": "tsx src/run.ts",
     "chain": "tsx src/run.ts",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test test/*.test.ts"
+    "test": "node --import tsx --test test/*.test.ts",
+    "bench": "node --import tsx scripts/run-reliability-benchmark.ts",
+    "sync-versions": "node scripts/sync-versions.mjs",
+    "docs:dev": "npm --prefix docs-vp run docs:dev",
+    "docs:build": "npm --prefix docs-vp run docs:build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",

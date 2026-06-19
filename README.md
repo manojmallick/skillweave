@@ -4,6 +4,8 @@ A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
 now with systematic non-determinism handling at the probabilistic boundary.
 
+![SkillWeave document-grounding chain](docs/architecture.svg)
+
 ```
 parse-input  →  validate-coverage  →  extract-highlights  →  memory-update
 (sigmap ask)    (sigmap validate)     (probabilistic)         (sigmap learn)

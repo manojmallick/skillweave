@@ -3,7 +3,7 @@
 
 import type { ContentBlock, Skill, State } from "../types.js";
 
-function parse(raw: string, inject?: State["_meta"]["inject"]): ContentBlock[] {
+function parse(raw: string): ContentBlock[] {
   const blocks: ContentBlock[] = [];
   const segments = raw.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
 
@@ -22,16 +22,6 @@ function parse(raw: string, inject?: State["_meta"]["inject"]): ContentBlock[] {
       blocks.push({ id, type: "paragraph", text: seg });
     }
   });
-
-  // Deliberate failure injection: fabricate a block absent from the source so
-  // the boundary judge has something ungrounded to catch.
-  if (inject === "hallucination") {
-    blocks.push({
-      id: "b_injected",
-      type: "paragraph",
-      text: "The classified neon-orange directive authorizes unlimited budget overrides.",
-    });
-  }
 
   return blocks;
 }
@@ -55,7 +45,7 @@ export const parseInput: Skill = {
   ],
   async run(state: State) {
     const raw = state.raw_input ?? "";
-    const blocks = parse(raw, state._meta.inject);
+    const blocks = parse(raw);
     return {
       writes: { content_blocks: blocks },
       summary: `extracted ${blocks.length} blocks`,

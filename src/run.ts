@@ -20,6 +20,7 @@ import { memoryUpdate } from "./skills/memory-update.js";
 import { parseInput } from "./skills/parse-input.js";
 import { validateCoverage } from "./skills/validate-coverage.js";
 import type { Pipeline, State } from "./types.js";
+import { VERSION } from "./version.js";
 
 const SAMPLE_DOC = `# Quarterly Engineering Update
 
@@ -59,7 +60,7 @@ function parseArgs(argv: string[]): { doc?: string; inject: State["_meta"]["inje
 
 const pipeline: Pipeline = {
   name: "document-grounding",
-  version: "0.2.0",
+  version: VERSION,
   domain: "documents",
   steps: [parseInput, validateCoverage, extractHighlights, memoryUpdate],
 };
