@@ -44,6 +44,7 @@ export default defineConfig({
         items: [
           { text: "Multi-LLM providers", link: "/guide/providers" },
           { text: "SigMap adapters", link: "/guide/adapters" },
+          { text: "Schema governance", link: "/guide/schemas" },
           { text: "CLI", link: "/guide/cli" },
         ],
       },

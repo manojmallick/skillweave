@@ -27,6 +27,7 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `sigmap context\|cost\|health` | SigMap adapter access (CONTEXT · COST · OBSERVE) |
 | `providers` | Provider/model capability table (tier · structured-output · cost) |
 | `neutral <file>` | Neutral Skill Language check (exit 1 on model-specific syntax) |
+| `check-schemas` | Validate the schema registry + skill pins + additive-only rule |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -161,6 +162,19 @@ npm run cli -- neutral docs/my-skill.md
 # ✓ docs/my-skill.md: model-neutral
 ```
 
+## `check-schemas`
+
+Validates the [schema registry](/guide/schemas): every `schemas/registry/<name>@<version>.json`
+parses (and its `$id` matches the filename), every skill `input_schema` / `output_schema`
+pin resolves, and the **additive-only rule** holds across consecutive versions within each
+major. Exits non-zero on a breaking change within a major.
+
+```bash
+npm run cli -- check-schemas
+#   content-block 1.0→1.1: +lang
+# ✓ 6 schemas valid · 5 pins resolve · additive-only holds
+```
+
 ## Provider selection
 
 The boundary judge picks a provider from environment variables — see the
@@ -176,7 +190,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (36 tests) |
+| `npm test` | `node:test` suite (43 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

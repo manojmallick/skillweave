@@ -1,14 +1,15 @@
 {
-  "version": "0.5.0",
-  "stage": "multi-llm-provider-layer",
-  "roadmap_target": "v0.6.0 — schema governance (versioned schemas, additive-only)",
+  "version": "0.6.0",
+  "stage": "schema-governance",
+  "roadmap_target": "v0.7.0 — security model (per-skill permissions, sandboxing)",
   "stats": {
     "base_skills": 3,
     "domain_skills": 4,
     "sigmap_adapters": 3,
     "provider_adapters": 4,
-    "cli_commands": 10,
-    "tests": 36,
+    "registry_schemas": 6,
+    "cli_commands": 11,
+    "tests": 43,
     "npm_runtime_deps": 4
   },
   "providers": [
