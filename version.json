@@ -1,20 +1,21 @@
 {
-  "version": "0.4.0",
-  "stage": "sigmap-adapters",
-  "roadmap_target": "v0.5.0 — multi-LLM provider layer (LLMProviderAdapter interface)",
+  "version": "0.5.0",
+  "stage": "multi-llm-provider-layer",
+  "roadmap_target": "v0.6.0 — schema governance (versioned schemas, additive-only)",
   "stats": {
     "base_skills": 3,
     "domain_skills": 4,
     "sigmap_adapters": 3,
-    "judge_providers": 3,
-    "cli_commands": 8,
-    "tests": 28,
+    "provider_adapters": 4,
+    "cli_commands": 10,
+    "tests": 36,
     "npm_runtime_deps": 4
   },
-  "judge_providers": [
+  "providers": [
     "anthropic",
-    "gemini",
-    "openai"
+    "google",
+    "openai",
+    "ollama"
   ],
   "benchmark_id": "skillweave-reliability-v0.2",
   "benchmark_date": "2026-06-19",

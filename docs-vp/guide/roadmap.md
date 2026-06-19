@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 28 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 8 CLI commands · 3 judge providers · 4 runtime deps
+**Stats:** 36 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 4 provider adapters · 10 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -51,17 +51,22 @@ stream) — no shell spawn, no rebuild. OBSERVE computes a composite 0–100 hea
 SigMap's grade scale, surfaced via `skillweave health` and a footer on every run.
 
 **Tags:** CONTEXT · COST · OBSERVE · skillweave health · sigmap command
-**Impact:** 28-test `node:test` suite; health grading from the shared NDJSON contract. (TRIGGER / EVENT / MEMORY adapters and `install @sigmap/adapters` deferred to later milestones.)
+**Impact:** health grading from the shared NDJSON contract. (TRIGGER / EVENT / MEMORY adapters and `install @sigmap/adapters` deferred to later milestones.)
+
+### v0.5.0 — Multi-LLM provider layer ✓
+
+A formal [`LLMProviderAdapter`](/guide/providers) interface with `anthropic` / `google`
+/ `openai` / `ollama` adapters, capability profiles in `provider-profiles/*.profile.yaml`,
+an executor that auto-selects a model by tier + required capabilities and runs
+**primary → fallback**, and a Neutral Skill Language validator. The boundary judge now
+routes its LLM call through the layer.
+
+**Tags:** LLMProviderAdapter · provider profiles · primary→fallback executor · neutral-language validator
+**Impact:** 36-test `node:test` suite; the same pipeline runs on any configured provider, with capability-driven model selection and automatic fallback.
 
 ## Planned
 
-### v0.5.0 — Multi-LLM provider layer → current milestone
-
-A formal `LLMProviderAdapter` interface, provider-profile YAML, primary + fallback
-executors, and a neutral-language validator. (The judge is already provider-pluggable
-across Claude / Gemini / OpenAI today.)
-
-### v0.6.0 — Schema governance
+### v0.6.0 — Schema governance → current milestone
 
 Semantic versioning on all schemas, additive-only enforcement, and a `check-schemas`
 command that catches breaking changes before execution.
@@ -88,4 +93,4 @@ platform (alerts, replay, A/B skill testing).
 
 ---
 
-**Current milestone:** v0.5.0 — multi-LLM provider layer (`LLMProviderAdapter` interface, provider profiles, fallback executors).
+**Current milestone:** v0.6.0 — schema governance (versioned schemas, additive-only rule, `check-schemas`).

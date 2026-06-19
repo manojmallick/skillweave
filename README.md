@@ -2,7 +2,7 @@
 
 > A runtime — and emerging open standard — for composing LLM tasks from small, focused, testable micro-skills.
 
-**Latest: v0.4.0** — SigMap CONTEXT/COST/OBSERVE adapters and `skillweave health` (composite 0–100 grading).
+**Latest: v0.5.0** — multi-LLM provider layer (adapters · capability profiles · primary→fallback) and a Neutral Skill Language validator.
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -45,7 +45,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (28 tests).
+Run the tests with `npm test` (36 tests).
 
 ## CLI
 
@@ -61,6 +61,8 @@ npm run cli -- trace                     # latest NDJSON trace
 npm run cli -- new pipeline my-flow      # scaffold a starter pipeline
 npm run cli -- health                    # composite 0–100 health score + grade
 npm run cli -- sigmap cost --suggest-tool "refactor auth security"   # → tier: powerful
+npm run cli -- providers                 # provider/model capability table
+npm run cli -- neutral docs/my-skill.md  # Neutral Skill Language check
 ```
 
 Per-step `confidence_threshold` / `retries` in the YAML override a skill's defaults for
@@ -118,6 +120,8 @@ src/
   registry.ts              skill name → implementation
   pipeline-loader.ts       parse + validate .pipeline.yaml → runnable Pipeline
   adapters/                SigMap CONTEXT/COST/OBSERVE wrappers (health grading)
+  providers/               LLMProviderAdapter — anthropic/google/openai/ollama, profiles, executor, neutral validator
+provider-profiles/         per-provider capability YAML
   base/
     base-io.ts             STATE writes (scope-enforced) + checkpoints   [frozen]
     base-assert.ts         runs declared assertions; failure halts        [frozen]

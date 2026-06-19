@@ -45,10 +45,10 @@ features:
     link: /guide/reliability
     linkText: How retry works →
   - icon: 🔌
-    title: Provider-neutral
-    details: "The same skill runs on Claude (claude-opus-4-8), Google AI Studio (gemini-2.5-flash), or OpenAI (gpt-4o-mini) — with a deterministic offline heuristic fallback."
+    title: Provider-neutral with automatic fallback
+    details: "A provider-adapter layer (Claude · Gemini · OpenAI · local Ollama) with capability profiles, tier-based model selection, and primary→fallback — plus a deterministic offline heuristic."
     link: /guide/providers
-    linkText: Multi-LLM judge →
+    linkText: Provider layer →
   - icon: 📊
     title: SigMap adapters + health grading
     details: "Wraps SigMap's CONTEXT / COST / OBSERVE primitives over local artifacts (no shell-out). A composite 0–100 health score grades every run on SigMap's A–D scale."
@@ -80,7 +80,7 @@ parse-input  →  validate-coverage  →  extract-highlights  →  memory-update
 npm install
 npm start                            # run the built-in chain (offline heuristic judge)
 npm start -- --inject hallucination  # ungrounded → judge RETRIES → recovers
-npm test                             # node:test suite (28 tests)
+npm test                             # node:test suite (36 tests)
 ```
 
 Or drive it from the `skillweave` CLI:
@@ -88,6 +88,7 @@ Or drive it from the `skillweave` CLI:
 ```bash
 npm run cli -- run pipelines/document-grounding.pipeline.yaml
 npm run cli -- health                # composite 0–100 health score + grade
+npm run cli -- providers             # provider/model capability table
 npm run cli -- validate pipelines/document-grounding.pipeline.yaml
 npm run cli -- list
 ```
