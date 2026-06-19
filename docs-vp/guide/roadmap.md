@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 9 tests passing · 3 frozen base skills · 4 domain skills · 3 judge providers · 3 runtime deps
+**Stats:** 21 tests passing · 3 frozen base skills · 4 domain skills · 6 CLI commands · 3 judge providers · 4 runtime deps
 
 ## Shipped
 
@@ -30,17 +30,21 @@ retry-with-negative-context (budget 2). Golden anchors in the skill contract; th
 `extract-highlights` probabilistic skill; deterministic skills stay overhead-free.
 
 **Tags:** confidence routing · auto-judge · retry-with-negative-context · golden anchors
-**Impact:** 9-test `node:test` suite; failing probabilistic skills recover instead of halting.
+**Impact:** failing probabilistic skills recover instead of halting.
+
+### v0.3.0 — Production runtime ✓
+
+A real runtime driven by a `skillweave` CLI: a pipeline YAML loader that resolves each
+step against a skill registry (with per-step `confidence_threshold` / `retries`
+overrides), and the commands `run` · `validate` · `test` · `list` · `trace` · `new`,
+plus an installable bin.
+
+**Tags:** skillweave CLI · pipeline YAML loader · skill registry · bin
+**Impact:** 21-test `node:test` suite; pipelines are declared in YAML and run/validated from the CLI. (Full JSON-schema registry with version resolution deferred to v0.6.0.)
 
 ## Planned
 
-### v0.3.0 — Production runtime → current milestone
-
-Real Node.js runtime and a real CLI: `orchestrator.ts` reading **pipeline YAML**, a
-skill loader (YAML + MD pairs), a schema registry with version resolution, and the
-`skillweave` CLI (`new`, `validate`, `run`, `test`, `trace`).
-
-### v0.4.0 — SigMap adapters
+### v0.4.0 — SigMap adapters → current milestone
 
 Extract SigMap primitives as SkillWeave standard adapters (CONTEXT, COST, OBSERVE,
 TRIGGER, MEMORY, EVENT) — wrappers, not rebuilds.
@@ -78,4 +82,4 @@ platform (alerts, replay, A/B skill testing).
 
 ---
 
-**Current milestone:** v0.3.0 — production runtime (CLI + YAML pipeline execution).
+**Current milestone:** v0.4.0 — SigMap adapters (CONTEXT / COST / OBSERVE wrappers).

@@ -6,6 +6,18 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-06-19
+
+### Added
+- `skillweave` CLI (#4): `run` · `validate` · `test` · `list` · `trace` · `new` — exit-code based and unit-testable.
+- Pipeline YAML loader — parses a `.pipeline.yaml` into a runnable `Pipeline`, resolving each step's `skill` against the registry and applying `confidence_threshold` / `retries` overrides without mutating the registered skill.
+- Skill registry mapping skill names to implementations.
+- Installable `skillweave` bin (`bin/skillweave.mjs`) and `npm run cli`.
+- `yaml` dependency (prebuilt, no install hooks).
+
+### Changed
+- `run.ts` and the CLI share the built-in sample documents via `src/sample-doc.ts`.
+
 ## [0.2.0] — 2026-06-19
 
 ### Added

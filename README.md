@@ -1,8 +1,12 @@
-# SkillWeave — v0.2.0 Reliability Layer
+# SkillWeave
+
+> An open standard and runtime for composing LLM tasks from small, focused, testable micro-skills.
+
+**Latest: v0.3.0** — a real `skillweave` CLI that runs and validates pipelines declared in YAML.
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
-now with systematic non-determinism handling at the probabilistic boundary.
+with systematic non-determinism handling at the probabilistic boundary.
 
 ![SkillWeave document-grounding chain](docs/architecture.svg)
 
@@ -41,7 +45,24 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test`.
+Run the tests with `npm test` (21 tests).
+
+## CLI
+
+v0.3.0 ships a `skillweave` CLI that loads a pipeline from YAML, resolves its skills
+from a registry, and runs it:
+
+```bash
+npm run cli -- run pipelines/document-grounding.pipeline.yaml [--doc <path>] [--inject <mode>]
+npm run cli -- validate pipelines/document-grounding.pipeline.yaml
+npm run cli -- test parse-input          # run a single skill in isolation
+npm run cli -- list                      # registered skills
+npm run cli -- trace                     # latest NDJSON trace
+npm run cli -- new pipeline my-flow      # scaffold a starter pipeline
+```
+
+Per-step `confidence_threshold` / `retries` in the YAML override a skill's defaults for
+that step only. See the [CLI guide](docs-vp/guide/cli.md) for the full reference.
 
 ## The boundary judge (multi-LLM)
 
@@ -90,6 +111,9 @@ src/
   types.ts                 SKILL · PIPELINE · STATE · ASSERTION + reliability types
   orchestrator.ts          drives the chain; confidence routing + auto-judge + retry
   judge.ts                 multi-LLM boundary judge + offline heuristic fallback
+  cli.ts                   skillweave CLI — run · validate · test · list · trace · new
+  registry.ts              skill name → implementation
+  pipeline-loader.ts       parse + validate .pipeline.yaml → runnable Pipeline
   base/
     base-io.ts             STATE writes (scope-enforced) + checkpoints   [frozen]
     base-assert.ts         runs declared assertions; failure halts        [frozen]
@@ -99,9 +123,11 @@ src/
     validate-coverage.ts   deterministic — assert coverage >= 0.70
     extract-highlights.ts  probabilistic — select highlights w/ confidence (judged + retried)
     memory-update.ts       deterministic — local NDJSON learning log
-  run.ts                   entry point, sample docs, CLI + failure injection
+  run.ts                   built-in chain entry point
+bin/skillweave.mjs         CLI launcher (tsx-backed)
 pipelines/
-  document-grounding.pipeline.yaml   human-readable contract
+  document-grounding.pipeline.yaml   runnable pipeline contract
+scripts/                   sync-versions · run-reliability-benchmark
 test/                      node:test suite (npm test)
 ```
 

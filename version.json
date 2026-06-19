@@ -1,13 +1,14 @@
 {
-  "version": "0.2.0",
-  "stage": "reliability-layer",
-  "roadmap_target": "v0.3.0 — production runtime (CLI + YAML pipeline execution)",
+  "version": "0.3.0",
+  "stage": "production-runtime",
+  "roadmap_target": "v0.4.0 — SigMap adapters (CONTEXT/COST/OBSERVE wrappers)",
   "stats": {
     "base_skills": 3,
     "domain_skills": 4,
     "judge_providers": 3,
-    "tests": 9,
-    "npm_runtime_deps": 3
+    "cli_commands": 6,
+    "tests": 21,
+    "npm_runtime_deps": 4
   },
   "judge_providers": [
     "anthropic",
@@ -15,7 +16,7 @@
     "openai"
   ],
   "benchmark_id": "skillweave-reliability-v0.2",
-  "benchmark_date": "2026-06-18",
+  "benchmark_date": "2026-06-19",
   "metrics": {
     "scenarios": 13,
     "success_rate_pct": 69.2,
