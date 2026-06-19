@@ -10,6 +10,7 @@ import {
   SigMapObserveAdapter,
 } from "./adapters/index.js";
 import { checkNeutralLanguage, loadProfile } from "./providers/index.js";
+import { checkSchemas } from "./schemas/check.js";
 import { AssertionError, runAssertions } from "./base/base-assert.js";
 import { applyWrites } from "./base/base-io.js";
 import { judgeExecutorLabel } from "./judge.js";
@@ -60,6 +61,7 @@ Usage:
   skillweave sigmap cost [--suggest-tool <task>]
   skillweave providers
   skillweave neutral <file>
+  skillweave check-schemas
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).`;
@@ -348,6 +350,23 @@ function cmdNeutral(rest: string[]): number {
   return 1;
 }
 
+function cmdCheckSchemas(): number {
+  const pins = new Set<string>();
+  for (const s of listSkills()) {
+    if (s.input_schema) pins.add(s.input_schema);
+    if (s.output_schema) pins.add(s.output_schema);
+  }
+  const result = checkSchemas([...pins]);
+  for (const d of result.diffs) console.log(`  ${d}`);
+  for (const e of result.errors) console.log(`  ✗ ${e}`);
+  if (result.ok) {
+    console.log(`✓ ${result.schemas} schemas valid · ${pins.size} pins resolve · additive-only holds`);
+    return 0;
+  }
+  console.log(`✗ check-schemas: ${result.errors.length} error(s)`);
+  return 1;
+}
+
 export async function cli(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   switch (cmd) {
@@ -371,6 +390,8 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdProviders();
     case "neutral":
       return cmdNeutral(rest);
+    case "check-schemas":
+      return cmdCheckSchemas();
     case "version":
     case "--version":
     case "-v":

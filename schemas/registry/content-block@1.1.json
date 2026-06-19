@@ -1,0 +1,12 @@
+{
+  "$id": "content-block@1.1",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "type": "string" },
+    "text": { "type": "string" },
+    "lang": { "type": "string" }
+  },
+  "required": ["id", "type", "text"],
+  "additionalProperties": false
+}

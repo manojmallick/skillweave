@@ -127,6 +127,10 @@ export interface Skill {
   retries?: number;
   /** Worked examples fed to the judge at this skill's boundary. */
   golden_anchors?: GoldenAnchor[];
+  /** Registry schema this skill reads, pinned as `name@version`. */
+  input_schema?: string;
+  /** Registry schema this skill writes, pinned as `name@version`. */
+  output_schema?: string;
   /** Executes the skill. `retry` carries negative context on a re-invocation. */
   run: (state: State, retry?: RetryContext) => Promise<SkillResult>;
 }

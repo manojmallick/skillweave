@@ -1,0 +1,13 @@
+{
+  "$id": "judge-verdict@1.0",
+  "type": "object",
+  "properties": {
+    "score": { "type": "number" },
+    "passed": { "type": "boolean" },
+    "confidence": { "type": "number" },
+    "failure_reason": { "type": ["string", "null"] },
+    "source": { "type": "string" }
+  },
+  "required": ["score", "passed", "confidence", "failure_reason", "source"],
+  "additionalProperties": false
+}

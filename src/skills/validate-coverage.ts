@@ -41,6 +41,8 @@ export const validateCoverage: Skill = {
   does_not: "extract content, score groundedness, or call an LLM",
   state_read: ["content_blocks"],
   state_write: ["coverage"],
+  input_schema: "content-block@1.1",
+  output_schema: "coverage@1.0",
   assertions: [
     {
       statement: "coverage_score >= 0.70",

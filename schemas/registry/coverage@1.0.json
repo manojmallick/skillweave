@@ -1,0 +1,11 @@
+{
+  "$id": "coverage@1.0",
+  "type": "object",
+  "properties": {
+    "score": { "type": "number" },
+    "sufficient": { "type": "boolean" },
+    "reasons": { "type": "array" }
+  },
+  "required": ["score", "sufficient", "reasons"],
+  "additionalProperties": false
+}
