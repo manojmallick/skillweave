@@ -6,6 +6,7 @@
 //                            with its prior output + the failure reason
 // Deterministic skills carry none of this overhead — assertions only, zero retries.
 
+import type { ObservabilityProvider } from "./adapters/types.js";
 import { AssertionError, runAssertions } from "./base/base-assert.js";
 import { applyWrites, checkpoint } from "./base/base-io.js";
 import { Tracer } from "./base/base-log.js";
@@ -32,9 +33,14 @@ export async function runPipeline(
   pipeline: Pipeline,
   state: State,
   executor: string,
-  opts: { quiet?: boolean } = {},
+  opts: { quiet?: boolean; observe?: ObservabilityProvider } = {},
 ): Promise<RunOutcome> {
   const tracer = new Tracer(state._meta.run_id);
+  const printHealth = () => {
+    if (opts.quiet || !opts.observe) return;
+    const h = opts.observe.health();
+    console.log(`health: ${h.grade} (${h.score}/100)  ·  ${h.components.runs} run(s)\n`);
+  };
 
   for (let i = 0; i < pipeline.steps.length; i++) {
     const skill = pipeline.steps[i]!;
@@ -119,11 +125,13 @@ export async function runPipeline(
       if (budget > 0) detail.push(`exhausted retry budget (${budget})`);
       tracer.record({ ...base, status: "halted", summary: "FAILED", detail });
       if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
+      printHealth();
       return { status: "halted", state, haltedAt: skill.name };
     }
   }
 
   if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
+  printHealth();
   return { status: "success", state };
 }
 
