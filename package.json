@@ -3,6 +3,26 @@
   "version": "0.6.0",
   "private": true,
   "description": "SkillWeave — a runtime (and emerging open standard) for composing LLM tasks from small, focused, testable micro-skills.",
+  "license": "MIT",
+  "author": "Manoj Mallick (https://github.com/manojmallick)",
+  "homepage": "https://manojmallick.github.io/skillweave/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manojmallick/skillweave.git"
+  },
+  "bugs": {
+    "url": "https://github.com/manojmallick/skillweave/issues"
+  },
+  "keywords": [
+    "llm",
+    "micro-skills",
+    "orchestration",
+    "ai",
+    "skillweave",
+    "boundary-judge",
+    "reliability",
+    "sigmap"
+  ],
   "type": "module",
   "bin": {
     "skillweave": "bin/skillweave.mjs"

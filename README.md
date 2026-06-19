@@ -2,6 +2,15 @@
 
 > A runtime — and emerging open standard — for composing LLM tasks from small, focused, testable micro-skills.
 
+[![Docs](https://img.shields.io/badge/docs-online-7c6af7)](https://manojmallick.github.io/skillweave/)
+[![Release](https://img.shields.io/github/v/release/manojmallick/skillweave?color=2ea043)](https://github.com/manojmallick/skillweave/releases)
+[![Deploy docs](https://github.com/manojmallick/skillweave/actions/workflows/docs.yml/badge.svg)](https://github.com/manojmallick/skillweave/actions/workflows/docs.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Tests](https://github.com/manojmallick/skillweave/actions/workflows/test.yml/badge.svg)](https://github.com/manojmallick/skillweave/actions/workflows/test.yml)
+[![Node](https://img.shields.io/badge/node-%E2%89%A520-339933)](https://nodejs.org)
+
+📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
+
 **Latest: v0.6.0** — schema governance: a versioned schema registry, additive-only rule, and `skillweave check-schemas`.
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
