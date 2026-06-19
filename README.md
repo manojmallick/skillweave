@@ -1,8 +1,8 @@
 # SkillWeave
 
-> An open standard and runtime for composing LLM tasks from small, focused, testable micro-skills.
+> A runtime — and emerging open standard — for composing LLM tasks from small, focused, testable micro-skills.
 
-**Latest: v0.3.0** — a real `skillweave` CLI that runs and validates pipelines declared in YAML.
+**Latest: v0.4.0** — SigMap CONTEXT/COST/OBSERVE adapters and `skillweave health` (composite 0–100 grading).
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -45,12 +45,12 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (21 tests).
+Run the tests with `npm test` (28 tests).
 
 ## CLI
 
-v0.3.0 ships a `skillweave` CLI that loads a pipeline from YAML, resolves its skills
-from a registry, and runs it:
+The `skillweave` CLI loads a pipeline from YAML, resolves its skills from a registry,
+and runs it — plus health grading and SigMap adapter access:
 
 ```bash
 npm run cli -- run pipelines/document-grounding.pipeline.yaml [--doc <path>] [--inject <mode>]
@@ -59,10 +59,13 @@ npm run cli -- test parse-input          # run a single skill in isolation
 npm run cli -- list                      # registered skills
 npm run cli -- trace                     # latest NDJSON trace
 npm run cli -- new pipeline my-flow      # scaffold a starter pipeline
+npm run cli -- health                    # composite 0–100 health score + grade
+npm run cli -- sigmap cost --suggest-tool "refactor auth security"   # → tier: powerful
 ```
 
 Per-step `confidence_threshold` / `retries` in the YAML override a skill's defaults for
-that step only. See the [CLI guide](docs-vp/guide/cli.md) for the full reference.
+that step only. See the [CLI guide](docs-vp/guide/cli.md) and the
+[SigMap adapters](docs-vp/guide/adapters.md) reference.
 
 ## The boundary judge (multi-LLM)
 
@@ -111,9 +114,10 @@ src/
   types.ts                 SKILL · PIPELINE · STATE · ASSERTION + reliability types
   orchestrator.ts          drives the chain; confidence routing + auto-judge + retry
   judge.ts                 multi-LLM boundary judge + offline heuristic fallback
-  cli.ts                   skillweave CLI — run · validate · test · list · trace · new
+  cli.ts                   skillweave CLI — run · validate · test · list · trace · new · health · sigmap
   registry.ts              skill name → implementation
   pipeline-loader.ts       parse + validate .pipeline.yaml → runnable Pipeline
+  adapters/                SigMap CONTEXT/COST/OBSERVE wrappers (health grading)
   base/
     base-io.ts             STATE writes (scope-enforced) + checkpoints   [frozen]
     base-assert.ts         runs declared assertions; failure halts        [frozen]

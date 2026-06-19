@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 21 tests passing · 3 frozen base skills · 4 domain skills · 6 CLI commands · 3 judge providers · 4 runtime deps
+**Stats:** 28 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 8 CLI commands · 3 judge providers · 4 runtime deps
 
 ## Shipped
 
@@ -40,16 +40,22 @@ overrides), and the commands `run` · `validate` · `test` · `list` · `trace` 
 plus an installable bin.
 
 **Tags:** skillweave CLI · pipeline YAML loader · skill registry · bin
-**Impact:** 21-test `node:test` suite; pipelines are declared in YAML and run/validated from the CLI. (Full JSON-schema registry with version resolution deferred to v0.6.0.)
+**Impact:** pipelines are declared in YAML and run/validated from the CLI. (Full JSON-schema registry with version resolution deferred to v0.6.0.)
+
+### v0.4.0 — SigMap adapters ✓
+
+The [SigMap adapter layer](/guide/adapters): `ContextProvider` / `CostManager` /
+`ObservabilityProvider` interfaces with implementations that **wrap SigMap's local
+artifacts** (the `.context/` directory and the SigMap `usage.ndjson`-compatible metric
+stream) — no shell spawn, no rebuild. OBSERVE computes a composite 0–100 health score on
+SigMap's grade scale, surfaced via `skillweave health` and a footer on every run.
+
+**Tags:** CONTEXT · COST · OBSERVE · skillweave health · sigmap command
+**Impact:** 28-test `node:test` suite; health grading from the shared NDJSON contract. (TRIGGER / EVENT / MEMORY adapters and `install @sigmap/adapters` deferred to later milestones.)
 
 ## Planned
 
-### v0.4.0 — SigMap adapters → current milestone
-
-Extract SigMap primitives as SkillWeave standard adapters (CONTEXT, COST, OBSERVE,
-TRIGGER, MEMORY, EVENT) — wrappers, not rebuilds.
-
-### v0.5.0 — Multi-LLM provider layer
+### v0.5.0 — Multi-LLM provider layer → current milestone
 
 A formal `LLMProviderAdapter` interface, provider-profile YAML, primary + fallback
 executors, and a neutral-language validator. (The judge is already provider-pluggable
@@ -82,4 +88,4 @@ platform (alerts, replay, A/B skill testing).
 
 ---
 
-**Current milestone:** v0.4.0 — SigMap adapters (CONTEXT / COST / OBSERVE wrappers).
+**Current milestone:** v0.5.0 — multi-LLM provider layer (`LLMProviderAdapter` interface, provider profiles, fallback executors).

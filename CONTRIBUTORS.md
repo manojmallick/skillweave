@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v0.4.0)
+
+- SigMap adapter layer — CONTEXT / COST / OBSERVE wrappers, `skillweave health`, and the `sigmap` CLI command (#7)
+
 ## Recent Contributors (v0.3.0)
 
 - Production runtime — `skillweave` CLI (run/validate/test/list/trace/new), pipeline YAML loader, and skill registry (#4)
