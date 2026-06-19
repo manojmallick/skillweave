@@ -10,6 +10,8 @@ SkillWeave executes a **pipeline** of **skills** that read and write a shared, t
 provide transport / assertion / logging, and a boundary judge validates probabilistic
 output.
 
+![SkillWeave document-grounding chain](/architecture.svg)
+
 ## The chain
 
 ```

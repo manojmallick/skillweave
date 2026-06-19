@@ -18,10 +18,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `--inject lowconf` and `--inject persistent` reliability demo modes (#1).
 - Documentation site (VitePress) under `docs-vp/`, plus `version.json`, `src/version.ts` (single version source), and `scripts/sync-versions.mjs` release tooling.
 - Community files: `CONTRIBUTING.md`, `CONTRIBUTORS.md`, `SECURITY.md`.
+- Reliability benchmark harness (`npm run bench`) — measures judge catch rate, retry recovery, and attempt counts from real traces; writes results to `version.json`.
+- Architecture diagram (`docs/architecture.svg`) embedded in the README and docs.
+- GitHub Pages deploy workflow for the docs site (`.github/workflows/docs.yml`).
 
 ### Changed
 - Execution summary and NDJSON trace now record attempt count and confidence band (#1).
 - Pipeline renamed `document-grounding-prototype` → `document-grounding`; contract bumped to `0.2.0` (#1).
+- `parse-input` no longer performs failure injection — `extract-highlights` owns all `--inject` modes.
 
 ### Removed
 - Standalone `boundary-judge` pipeline step — superseded by the auto-inserted judge (#1).

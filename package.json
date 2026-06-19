@@ -9,6 +9,7 @@
     "chain": "tsx src/run.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test test/*.test.ts",
+    "bench": "node --import tsx scripts/run-reliability-benchmark.ts",
     "sync-versions": "node scripts/sync-versions.mjs",
     "docs:dev": "npm --prefix docs-vp run docs:dev",
     "docs:build": "npm --prefix docs-vp run docs:build"

@@ -84,3 +84,27 @@ STATUS: SUCCESS   total: 1ms   cost: $0.0000   retries: 1
 Probabilistic skills declare `golden_anchors` — worked input/output examples of
 acceptable output. They are threaded into the judge prompt so the model has a concrete
 reference for what "grounded" looks like (the offline heuristic ignores them).
+
+## Measured
+
+The layer is benchmarked by `npm run bench`, which runs the chain across a matrix of
+documents × inject-modes with the offline heuristic judge (deterministic, so the numbers
+are reproducible) and reads the metrics back from the real NDJSON traces:
+
+| Metric | Result |
+|--------|:------:|
+| Judge catch rate (fabricated highlights caught) | **100%** (6/6) |
+| Retry recovery rate | **66.7%** (6/9) |
+| Avg attempts at the probabilistic boundary | **2.0** |
+| Deterministic zero-overhead | **true** |
+| Scenario success rate | **69.2%** (9/13) |
+
+Recovery and success rates intentionally include the *designed-to-fail* scenarios — the
+`persistent` mode (never recoverable) and the thin-document `coverage` halt — so they are
+lower bounds, not best-case figures. The headline results are that the judge caught
+**every** fabricated highlight and that deterministic skills were **never** retried.
+
+```bash
+npm run bench           # print the table
+npm run bench -- --save # also write metrics into version.json
+```

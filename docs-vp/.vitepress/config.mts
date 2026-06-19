@@ -1,7 +1,9 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
-  base: "/",
+  // Project Pages site: https://manojmallick.github.io/skillweave/
+  // Change to "/" if you later attach a custom domain (CNAME).
+  base: "/skillweave/",
   title: "SkillWeave",
   description:
     "An open standard and runtime for composing LLM tasks from small, focused, testable micro-skills.",
@@ -57,7 +59,7 @@ export default defineConfig({
     footer: {
       message: "MIT License",
       copyright:
-        'Copyright © 2026 <a href="https://github.com/manojmallick" target="_blank" rel="noopener">LearnHubPlay BV</a> · Made in Amsterdam 🇳🇱',
+        'Copyright © 2026 <a href="https://github.com/manojmallick" target="_blank" rel="noopener">Manoj Mallick</a> · Made in Amsterdam 🇳🇱',
     },
 
     editLink: {

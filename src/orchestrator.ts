@@ -32,6 +32,7 @@ export async function runPipeline(
   pipeline: Pipeline,
   state: State,
   executor: string,
+  opts: { quiet?: boolean } = {},
 ): Promise<RunOutcome> {
   const tracer = new Tracer(state._meta.run_id);
 
@@ -117,12 +118,12 @@ export async function runPipeline(
       const detail = [failure];
       if (budget > 0) detail.push(`exhausted retry budget (${budget})`);
       tracer.record({ ...base, status: "halted", summary: "FAILED", detail });
-      tracer.printSummary(pipeline.name, pipeline.version, executor);
+      if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
       return { status: "halted", state, haltedAt: skill.name };
     }
   }
 
-  tracer.printSummary(pipeline.name, pipeline.version, executor);
+  if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
   return { status: "success", state };
 }
 

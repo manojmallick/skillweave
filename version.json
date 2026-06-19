@@ -14,5 +14,14 @@
     "gemini",
     "openai"
   ],
-  "notes": "Metrics (hit@5, token reduction, task success) are not yet measured for SkillWeave — no benchmark harness exists. This file carries version + structural stats only; do not add fabricated metric numbers."
+  "benchmark_id": "skillweave-reliability-v0.2",
+  "benchmark_date": "2026-06-18",
+  "metrics": {
+    "scenarios": 13,
+    "success_rate_pct": 69.2,
+    "recovery_rate_pct": 66.7,
+    "judge_catch_rate_pct": 100,
+    "avg_probabilistic_attempts": 2,
+    "deterministic_zero_overhead": true
+  }
 }

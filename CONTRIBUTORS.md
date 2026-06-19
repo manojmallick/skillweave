@@ -1,7 +1,7 @@
 # Contributors
 
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
-at LearnHubPlay BV (Amsterdam).
+(Amsterdam).
 
 ## Recent Contributors (v0.2.0)
 
