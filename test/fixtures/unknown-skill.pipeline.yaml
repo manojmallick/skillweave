@@ -1,0 +1,7 @@
+name: bad-pipeline
+version: 0.1.0
+domain: documents
+pipeline:
+  - skill: does-not-exist
+  - skill: extract-highlights
+    confidence_threshold: 9

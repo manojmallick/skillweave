@@ -1,0 +1,9 @@
+name: override-demo
+version: 0.1.0
+domain: documents
+pipeline:
+  - skill: parse-input
+    execution_class: deterministic
+  - skill: extract-highlights
+    execution_class: probabilistic
+    retries: 5

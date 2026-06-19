@@ -2,11 +2,15 @@
   "name": "skillweave",
   "version": "0.2.0",
   "private": true,
-  "description": "SkillWeave v0.1.0 prototype chain — parse-input → validate-coverage → boundary-judge → memory-update",
+  "description": "SkillWeave — an open standard and runtime for composing LLM tasks from small, focused, testable micro-skills.",
   "type": "module",
+  "bin": {
+    "skillweave": "bin/skillweave.mjs"
+  },
   "scripts": {
     "start": "tsx src/run.ts",
     "chain": "tsx src/run.ts",
+    "cli": "tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test test/*.test.ts",
     "bench": "node --import tsx scripts/run-reliability-benchmark.ts",
@@ -17,7 +21,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
     "@google/genai": "^1.0.0",
-    "openai": "^4.77.0"
+    "openai": "^4.77.0",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

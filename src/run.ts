@@ -19,24 +19,9 @@ import { extractHighlights } from "./skills/extract-highlights.js";
 import { memoryUpdate } from "./skills/memory-update.js";
 import { parseInput } from "./skills/parse-input.js";
 import { validateCoverage } from "./skills/validate-coverage.js";
+import { SAMPLE_DOC, THIN_DOC } from "./sample-doc.js";
 import type { Pipeline, State } from "./types.js";
 import { VERSION } from "./version.js";
-
-const SAMPLE_DOC = `# Quarterly Engineering Update
-
-The platform team shipped the new retrieval pipeline this quarter. Latency
-dropped by roughly forty percent after we moved ranking onto the graph index.
-
-## Highlights
-- Retrieval hit@5 improved from 14% to 76%
-- Token usage per request fell by 39%
-- Zero context-window overflows across the 21 monitored repositories
-
-## Next Quarter
-We will extend the adapter layer to cover document and finance domains, and
-begin a public beta of the registry.`;
-
-const THIN_DOC = "# Note\nok";
 
 const INJECT_MODES = ["coverage", "lowconf", "hallucination", "persistent"] as const;
 
