@@ -78,11 +78,17 @@ parse-input  →  validate-coverage  →  extract-highlights  →  memory-update
 
 ```bash
 npm install
-npm start                            # run the chain (offline heuristic judge)
-npm start -- --inject lowconf        # low confidence → routing RETRIES → recovers
+npm start                            # run the built-in chain (offline heuristic judge)
 npm start -- --inject hallucination  # ungrounded → judge RETRIES → recovers
-npm start -- --inject persistent     # unrecoverable → retries exhausted → HALTS
-npm test                             # node:test suite
+npm test                             # node:test suite (21 tests)
+```
+
+Or drive it from the `skillweave` CLI (v0.3.0):
+
+```bash
+npm run cli -- run pipelines/document-grounding.pipeline.yaml
+npm run cli -- validate pipelines/document-grounding.pipeline.yaml
+npm run cli -- list
 ```
 
 To run the boundary judge on a real model, set one of `ANTHROPIC_API_KEY`,

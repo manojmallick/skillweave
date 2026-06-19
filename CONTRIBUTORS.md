@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v0.3.0)
+
+- Production runtime — `skillweave` CLI (run/validate/test/list/trace/new), pipeline YAML loader, and skill registry (#4)
+
 ## Recent Contributors (v0.2.0)
 
 - Reliability layer — confidence routing, retry-with-negative-context, auto-judge, golden anchors (#1)
