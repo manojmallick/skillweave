@@ -6,6 +6,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-06-19
+
+### Added
+- SigMap adapter layer (#7) under `src/adapters/` — `ContextProvider` / `CostManager` / `ObservabilityProvider` interfaces with SigMap-backed implementations that wrap local artifacts (the `.context/` directory and the SigMap `usage.ndjson`-compatible metric stream). No shell spawn, no rebuild.
+- OBSERVE — composite 0–100 health score on SigMap's grade scale (A≥90 · B≥75 · C≥60 · D<60), surfaced via `skillweave health` and a footer on every run.
+- CONTEXT — loads SigMap's `.context/query-context.md` (graceful no-op when absent).
+- COST — model-tier routing (`fast` / `balanced` / `powerful`) and per-run cost from traces.
+- CLI: `skillweave health` and `skillweave sigmap context | cost | health`.
+
 ## [0.3.0] — 2026-06-19
 
 ### Added

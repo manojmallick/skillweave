@@ -23,6 +23,8 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `list [skills\|pipelines]` | List registered skills (or pipeline files) |
 | `trace [last]` | Print the most recent NDJSON trace |
 | `new pipeline\|skill <name>` | Scaffold a starter file |
+| `health` | Composite 0–100 health score + grade (SigMap OBSERVE adapter) |
+| `sigmap context\|cost\|health` | SigMap adapter access (CONTEXT · COST · OBSERVE) |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -106,6 +108,34 @@ Each `skill` must be registered (see `skillweave list`). Per-step
 `confidence_threshold` and `retries` override the skill's defaults **for that step
 only** — the registered skill is never mutated.
 
+## `health`
+
+Computes a composite **0–100** health score and grade (SigMap scale: `A≥90 · B≥75 ·
+C≥60 · D<60`) from the NDJSON metric stream — success rate, judge-pass rate, and
+low-retry rate across recent runs. The grade also prints as a footer after every
+`run` / `npm start`.
+
+```bash
+npm run cli -- health
+# health: A (100/100)
+#   runs            : 1
+#   success rate    : 100%
+#   judge pass rate : 100%
+#   low-retry rate  : 100%
+```
+
+## `sigmap`
+
+Direct access to the [SigMap adapters](/guide/adapters) — wrappers over SigMap's local
+artifacts (no shell spawn).
+
+```bash
+npm run cli -- sigmap context --query "auth flow"      # prints .context/query-context.md if present
+npm run cli -- sigmap cost --suggest-tool "refactor auth security"   # → tier: powerful
+npm run cli -- sigmap cost                              # total cost across traces
+npm run cli -- sigmap health                            # alias of `health`
+```
+
 ## Provider selection
 
 The boundary judge picks a provider from environment variables — see the
@@ -121,7 +151,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (21 tests) |
+| `npm test` | `node:test` suite (28 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

@@ -6,7 +6,7 @@ export default defineConfig({
   base: "/skillweave/",
   title: "SkillWeave",
   description:
-    "An open standard and runtime for composing LLM tasks from small, focused, testable micro-skills.",
+    "A runtime — and emerging open standard — for composing LLM tasks from small, focused, testable micro-skills.",
 
   appearance: "dark",
 
@@ -43,6 +43,7 @@ export default defineConfig({
         text: "Reference",
         items: [
           { text: "Multi-LLM judge", link: "/guide/providers" },
+          { text: "SigMap adapters", link: "/guide/adapters" },
           { text: "CLI", link: "/guide/cli" },
         ],
       },

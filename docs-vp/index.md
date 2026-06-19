@@ -1,7 +1,7 @@
 ---
 layout: home
 title: SkillWeave — compose LLM tasks from small, testable micro-skills
-description: SkillWeave is an open standard and runtime for composing LLM tasks from small, focused, testable micro-skills — with orchestration, schema contracts, multi-LLM support, and semantic verification.
+description: SkillWeave is a runtime — and emerging open standard — for composing LLM tasks from small, focused, testable micro-skills, with orchestration, schema contracts, multi-LLM support, and semantic verification.
 head:
   - - meta
     - property: og:title
@@ -16,7 +16,7 @@ head:
 hero:
   name: SkillWeave
   text: Craft intelligence from small, focused pieces.
-  tagline: "An open standard and runtime for composing LLM tasks from small, focused, testable micro-skills. Ask → Validate → Judge → Learn."
+  tagline: "A runtime — and emerging open standard — for composing LLM tasks from small, focused, testable micro-skills. The reference pipeline follows Ask → Validate → Judge → Learn."
   actions:
     - theme: brand
       text: Quick start →
@@ -50,10 +50,10 @@ features:
     link: /guide/providers
     linkText: Multi-LLM judge →
   - icon: 📊
-    title: Local-first observability
-    details: "An NDJSON trace (SigMap usage.ndjson-compatible) and a STATE checkpoint are written after every skill and attempt. Zero telemetry."
-    link: /guide/architecture
-    linkText: Architecture →
+    title: SigMap adapters + health grading
+    details: "Wraps SigMap's CONTEXT / COST / OBSERVE primitives over local artifacts (no shell-out). A composite 0–100 health score grades every run on SigMap's A–D scale."
+    link: /guide/adapters
+    linkText: SigMap adapters →
   - icon: 🌱
     title: Built on a proven pattern
     details: "SkillWeave generalises SigMap's production ask → validate → judge → learn workflow from code to any domain."
@@ -80,13 +80,14 @@ parse-input  →  validate-coverage  →  extract-highlights  →  memory-update
 npm install
 npm start                            # run the built-in chain (offline heuristic judge)
 npm start -- --inject hallucination  # ungrounded → judge RETRIES → recovers
-npm test                             # node:test suite (21 tests)
+npm test                             # node:test suite (28 tests)
 ```
 
-Or drive it from the `skillweave` CLI (v0.3.0):
+Or drive it from the `skillweave` CLI:
 
 ```bash
 npm run cli -- run pipelines/document-grounding.pipeline.yaml
+npm run cli -- health                # composite 0–100 health score + grade
 npm run cli -- validate pipelines/document-grounding.pipeline.yaml
 npm run cli -- list
 ```

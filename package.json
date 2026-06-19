@@ -1,8 +1,8 @@
 {
   "name": "skillweave",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
-  "description": "SkillWeave — an open standard and runtime for composing LLM tasks from small, focused, testable micro-skills.",
+  "description": "SkillWeave — a runtime (and emerging open standard) for composing LLM tasks from small, focused, testable micro-skills.",
   "type": "module",
   "bin": {
     "skillweave": "bin/skillweave.mjs"
