@@ -6,7 +6,7 @@
 [![Release](https://img.shields.io/github/v/release/manojmallick/skillweave?color=2ea043)](https://github.com/manojmallick/skillweave/releases)
 [![Deploy docs](https://github.com/manojmallick/skillweave/actions/workflows/docs.yml/badge.svg)](https://github.com/manojmallick/skillweave/actions/workflows/docs.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-43%20passing-brightgreen)](#)
+[![Tests](https://github.com/manojmallick/skillweave/actions/workflows/test.yml/badge.svg)](https://github.com/manojmallick/skillweave/actions/workflows/test.yml)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-339933)](https://nodejs.org)
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
