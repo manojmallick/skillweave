@@ -1,26 +1,26 @@
 // Boundary judge engine. Scores how well the parsed content_blocks are
-// *grounded* in the raw input — i.e. whether parse-input fabricated or dropped
-// content. Provider-pluggable: Claude (Anthropic), Gemini (Google AI Studio), or
-// OpenAI when a key is present; otherwise a deterministic token-overlap heuristic
-// so the chain still runs end-to-end offline.
+// *grounded* in the raw input. The LLM call routes through the multi-LLM provider
+// layer (with primary→fallback); when no provider is configured it falls back to
+// a deterministic offline heuristic so the chain still runs end-to-end.
 //
 // Provider selection (first match wins):
-//   JUDGE_PROVIDER=anthropic|gemini|openai|heuristic   explicit override
-//   ANTHROPIC_API_KEY set                               → anthropic
-//   GEMINI_API_KEY / GOOGLE_API_KEY set                 → gemini
-//   OPENAI_API_KEY set                                  → openai
-//   otherwise                                           → heuristic
+//   JUDGE_PROVIDER=anthropic|gemini|openai|ollama|heuristic   explicit override
+//   ANTHROPIC_API_KEY set                                      → anthropic
+//   GEMINI_API_KEY / GOOGLE_API_KEY set                        → google
+//   OPENAI_API_KEY set                                         → openai
+//   OLLAMA_HOST set                                            → ollama
+//   otherwise                                                  → heuristic
 
-import Anthropic from "@anthropic-ai/sdk";
-import { GoogleGenAI, Type } from "@google/genai";
-import OpenAI from "openai";
+import {
+  buildAdapters,
+  resolveTargets,
+  runWithFallback,
+  type LLMProviderAdapter,
+  type ResolvedTarget,
+} from "./providers/index.js";
 import type { ContentBlock, GoldenAnchor, JudgeVerdict } from "./types.js";
 
-const ANTHROPIC_MODEL = "claude-opus-4-8";
-const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
-const OPENAI_MODEL = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
-
-export type JudgeProvider = "anthropic" | "gemini" | "openai" | "heuristic";
+export type JudgeProvider = "anthropic" | "gemini" | "openai" | "ollama" | "heuristic";
 
 export interface JudgeInput {
   raw_input: string;
@@ -32,12 +32,31 @@ export interface JudgeInput {
 /** Estimated cost of the most recent LLM judge call, in USD. */
 export let lastJudgeCost = 0;
 
+const NEUTRAL_SCHEMA = {
+  type: "object",
+  properties: {
+    score: { type: "number" },
+    passed: { type: "boolean" },
+    confidence: { type: "number" },
+    failure_reason: { type: ["string", "null"] },
+  },
+  required: ["score", "passed", "confidence", "failure_reason"],
+  additionalProperties: false,
+} as const;
+
+let cachedAdapters: Record<string, LLMProviderAdapter> | null = null;
+function adapters(): Record<string, LLMProviderAdapter> {
+  if (!cachedAdapters) cachedAdapters = buildAdapters();
+  return cachedAdapters;
+}
+
 export function selectProvider(): JudgeProvider {
   const explicit = process.env.JUDGE_PROVIDER?.toLowerCase();
   if (
     explicit === "anthropic" ||
     explicit === "gemini" ||
     explicit === "openai" ||
+    explicit === "ollama" ||
     explicit === "heuristic"
   ) {
     return explicit;
@@ -45,60 +64,85 @@ export function selectProvider(): JudgeProvider {
   if (process.env.ANTHROPIC_API_KEY) return "anthropic";
   if (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY) return "gemini";
   if (process.env.OPENAI_API_KEY) return "openai";
+  if (process.env.OLLAMA_HOST) return "ollama";
   return "heuristic";
+}
+
+const adapterName = (p: JudgeProvider): string => (p === "gemini" ? "google" : p);
+const sourceFor = (name: string): JudgeVerdict["source"] =>
+  name === "google" ? "gemini" : (name as JudgeVerdict["source"]);
+
+function modelOverride(name: string): string | undefined {
+  if (name === "google") return process.env.GEMINI_MODEL;
+  if (name === "openai") return process.env.OPENAI_MODEL;
+  if (name === "anthropic") return process.env.ANTHROPIC_MODEL;
+  if (name === "ollama") return process.env.OLLAMA_MODEL;
+  return undefined;
+}
+
+/** Ordered judge targets: chosen primary first, then any other available providers. */
+function judgeTargets(): ResolvedTarget[] {
+  const primary = selectProvider();
+  if (primary === "heuristic") return [];
+  const ad = adapters();
+
+  const names: string[] = [adapterName(primary)];
+  for (const a of Object.values(ad)) {
+    if (a.available() && !names.includes(a.name)) names.push(a.name);
+  }
+
+  const targets = resolveTargets(
+    { primary: names[0]!, fallback: names.slice(1), requires: ["structured_output"] },
+    ad,
+  );
+
+  // Apply per-provider model overrides from the environment.
+  return targets.map((t) => {
+    const id = modelOverride(t.adapter.name);
+    if (!id) return t;
+    const m =
+      t.adapter.models.find((x) => x.id === id) ??
+      ({ id, tier: "balanced", context_window: 0, supports_structured_output: true, cost_per_1k_input: 0, cost_per_1k_output: 0 } as const);
+    return { adapter: t.adapter, model: m };
+  });
 }
 
 /** Human-readable executor label for the execution summary. */
 export function judgeExecutorLabel(): string {
-  switch (selectProvider()) {
-    case "anthropic":
-      return `anthropic/${ANTHROPIC_MODEL}`;
-    case "gemini":
-      return `google/${GEMINI_MODEL}`;
-    case "openai":
-      return `openai/${OPENAI_MODEL}`;
-    default:
-      return "heuristic (no LLM key)";
-  }
+  const targets = judgeTargets();
+  if (targets.length === 0) return "heuristic (no LLM key)";
+  const t = targets[0]!;
+  return `${t.adapter.name}/${t.model.id}`;
 }
 
 export async function judge(input: JudgeInput): Promise<JudgeVerdict> {
   lastJudgeCost = 0;
-  const provider = selectProvider();
+  const targets = judgeTargets();
+  if (targets.length === 0) return heuristicJudge(input);
 
-  if (provider === "anthropic") {
-    try {
-      return await anthropicJudge(input);
-    } catch (err) {
-      warnFallback("Anthropic", err);
-    }
-  } else if (provider === "gemini") {
-    try {
-      return await geminiJudge(input);
-    } catch (err) {
-      warnFallback("Gemini", err);
-    }
-  } else if (provider === "openai") {
-    try {
-      return await openaiJudge(input);
-    } catch (err) {
-      warnFallback("OpenAI", err);
-    }
+  try {
+    return await runWithFallback(targets, async (t) => {
+      const result = await t.adapter.complete({
+        prompt: buildPrompt(input),
+        json_schema: NEUTRAL_SCHEMA as unknown as Record<string, unknown>,
+        max_tokens: 4000,
+        model: t.model.id,
+      });
+      lastJudgeCost = result.cost;
+      const parsed = JSON.parse(result.text) as Omit<JudgeVerdict, "source">;
+      return { ...parsed, source: sourceFor(t.adapter.name) };
+    });
+  } catch (err) {
+    console.warn(
+      `  (boundary-judge: all providers failed — ${err instanceof Error ? err.message : String(err)}; falling back to heuristic)`,
+    );
+    return heuristicJudge(input);
   }
-  return heuristicJudge(input);
-}
-
-function warnFallback(name: string, err: unknown): void {
-  console.warn(
-    `  (boundary-judge: ${name} call failed — ${err instanceof Error ? err.message : String(err)}; falling back to heuristic)`,
-  );
 }
 
 /** Shared, model-neutral judge prompt. */
 function buildPrompt(input: JudgeInput): string {
-  const blocks = input.content_blocks
-    .map((b, i) => `[${i}] (${b.type}) ${b.text}`)
-    .join("\n");
+  const blocks = input.content_blocks.map((b, i) => `[${i}] (${b.type}) ${b.text}`).join("\n");
   const lines = [
     "You are a groundedness judge. Given a SOURCE document and a set of parsed",
     "CONTENT BLOCKS extracted from it, score how faithfully the blocks are grounded",
@@ -118,119 +162,6 @@ function buildPrompt(input: JudgeInput): string {
   }
   lines.push("", "=== SOURCE ===", input.raw_input, "", "=== CONTENT BLOCKS ===", blocks);
   return lines.join("\n");
-}
-
-const ANTHROPIC_SCHEMA = {
-  type: "object",
-  properties: {
-    score: { type: "number", description: "Groundedness 0.0–1.0" },
-    passed: { type: "boolean" },
-    confidence: { type: "number", description: "0.0–1.0" },
-    failure_reason: { type: ["string", "null"] },
-  },
-  required: ["score", "passed", "confidence", "failure_reason"],
-  additionalProperties: false,
-} as const;
-
-async function anthropicJudge(input: JudgeInput): Promise<JudgeVerdict> {
-  const client = new Anthropic();
-  // `adaptive` thinking and `output_config` are current API features that
-  // post-date this SDK's static types; the wire body is passed through as-is.
-  const body = {
-    model: ANTHROPIC_MODEL,
-    max_tokens: 4000,
-    thinking: { type: "adaptive" },
-    messages: [{ role: "user", content: buildPrompt(input) }],
-    output_config: { format: { type: "json_schema", schema: ANTHROPIC_SCHEMA } },
-  } as unknown as Anthropic.Messages.MessageCreateParamsNonStreaming;
-
-  const response = await client.messages.create(body);
-
-  lastJudgeCost =
-    (response.usage.input_tokens * 5) / 1_000_000 +
-    (response.usage.output_tokens * 25) / 1_000_000;
-
-  const textBlock = response.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
-    throw new Error("no text block in judge response");
-  }
-  const parsed = JSON.parse(textBlock.text) as Omit<JudgeVerdict, "source">;
-  return { ...parsed, source: "anthropic" };
-}
-
-const GEMINI_SCHEMA = {
-  type: Type.OBJECT,
-  properties: {
-    score: { type: Type.NUMBER },
-    passed: { type: Type.BOOLEAN },
-    confidence: { type: Type.NUMBER },
-    failure_reason: { type: Type.STRING, nullable: true },
-  },
-  required: ["score", "passed", "confidence", "failure_reason"],
-  propertyOrdering: ["score", "passed", "confidence", "failure_reason"],
-};
-
-async function geminiJudge(input: JudgeInput): Promise<JudgeVerdict> {
-  const apiKey = process.env.GEMINI_API_KEY ?? process.env.GOOGLE_API_KEY;
-  const ai = new GoogleGenAI({ apiKey });
-
-  const response = await ai.models.generateContent({
-    model: GEMINI_MODEL,
-    contents: buildPrompt(input),
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: GEMINI_SCHEMA,
-    },
-  });
-
-  const text = response.text;
-  if (!text) throw new Error("empty Gemini response");
-
-  // gemini-2.5-flash list pricing (approx, USD/1M tokens): $0.30 in / $2.50 out.
-  const usage = response.usageMetadata;
-  lastJudgeCost =
-    ((usage?.promptTokenCount ?? 0) * 0.3) / 1_000_000 +
-    ((usage?.candidatesTokenCount ?? 0) * 2.5) / 1_000_000;
-
-  const parsed = JSON.parse(text) as Omit<JudgeVerdict, "source">;
-  return { ...parsed, source: "gemini" };
-}
-
-const OPENAI_SCHEMA = {
-  type: "object",
-  properties: {
-    score: { type: "number", description: "Groundedness 0.0–1.0" },
-    passed: { type: "boolean" },
-    confidence: { type: "number", description: "0.0–1.0" },
-    failure_reason: { type: ["string", "null"] },
-  },
-  required: ["score", "passed", "confidence", "failure_reason"],
-  additionalProperties: false,
-} as const;
-
-async function openaiJudge(input: JudgeInput): Promise<JudgeVerdict> {
-  const client = new OpenAI();
-
-  const completion = await client.chat.completions.create({
-    model: OPENAI_MODEL,
-    messages: [{ role: "user", content: buildPrompt(input) }],
-    response_format: {
-      type: "json_schema",
-      json_schema: { name: "groundedness", strict: true, schema: OPENAI_SCHEMA },
-    },
-  });
-
-  // gpt-4o-mini list pricing (approx, USD/1M tokens): $0.15 in / $0.60 out.
-  const usage = completion.usage;
-  lastJudgeCost =
-    ((usage?.prompt_tokens ?? 0) * 0.15) / 1_000_000 +
-    ((usage?.completion_tokens ?? 0) * 0.6) / 1_000_000;
-
-  const text = completion.choices[0]?.message.content;
-  if (!text) throw new Error("empty OpenAI response");
-
-  const parsed = JSON.parse(text) as Omit<JudgeVerdict, "source">;
-  return { ...parsed, source: "openai" };
 }
 
 function tokens(s: string): Set<string> {
@@ -260,8 +191,6 @@ function heuristicJudge(input: JudgeInput): JudgeVerdict {
     if (overlap < 0.5) ungrounded.push(i);
   });
 
-  // Mean overlap, then a fabrication penalty so a single clearly-ungrounded
-  // block can't be diluted past the threshold by surrounding faithful blocks.
   const mean = input.content_blocks.length ? sum / input.content_blocks.length : 0;
   const score = Math.max(0, mean - 0.25 * ungrounded.length);
   const passed = score >= input.threshold;
@@ -269,9 +198,7 @@ function heuristicJudge(input: JudgeInput): JudgeVerdict {
     score: Number(score.toFixed(3)),
     passed,
     confidence: 0.7,
-    failure_reason: passed
-      ? null
-      : `blocks not grounded in source: [${ungrounded.join(", ")}]`,
+    failure_reason: passed ? null : `blocks not grounded in source: [${ungrounded.join(", ")}]`,
     source: "heuristic",
   };
 }

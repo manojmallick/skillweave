@@ -1,0 +1,16 @@
+provider: ollama
+# Local models — zero cost, full privacy. Structured-output support is
+# model-dependent, so it is declared off here; set it per-model as needed.
+models:
+  - id: llama3.1
+    tier: balanced
+    context_window: 128000
+    supports_structured_output: false
+    cost_per_1k_input: 0
+    cost_per_1k_output: 0
+  - id: qwen2.5-coder
+    tier: fast
+    context_window: 32768
+    supports_structured_output: false
+    cost_per_1k_input: 0
+    cost_per_1k_output: 0
