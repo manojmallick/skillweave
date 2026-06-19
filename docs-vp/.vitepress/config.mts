@@ -42,7 +42,7 @@ export default defineConfig({
       {
         text: "Reference",
         items: [
-          { text: "Multi-LLM judge", link: "/guide/providers" },
+          { text: "Multi-LLM providers", link: "/guide/providers" },
           { text: "SigMap adapters", link: "/guide/adapters" },
           { text: "CLI", link: "/guide/cli" },
         ],

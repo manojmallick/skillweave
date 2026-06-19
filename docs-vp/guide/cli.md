@@ -25,6 +25,8 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `new pipeline\|skill <name>` | Scaffold a starter file |
 | `health` | Composite 0–100 health score + grade (SigMap OBSERVE adapter) |
 | `sigmap context\|cost\|health` | SigMap adapter access (CONTEXT · COST · OBSERVE) |
+| `providers` | Provider/model capability table (tier · structured-output · cost) |
+| `neutral <file>` | Neutral Skill Language check (exit 1 on model-specific syntax) |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -136,10 +138,33 @@ npm run cli -- sigmap cost                              # total cost across trac
 npm run cli -- sigmap health                            # alias of `health`
 ```
 
+## `providers`
+
+Prints the provider/model capability table loaded from `provider-profiles/*.profile.yaml`
+(see the [provider layer](/guide/providers)).
+
+```bash
+npm run cli -- providers
+# anthropic
+#   claude-opus-4-8    powerful  structured     $0.005/$0.025 per 1k
+#   ...
+```
+
+## `neutral`
+
+Checks a file against the **Neutral Skill Language Standard** — skill instructions must
+run on any LLM, so they may not name a model/vendor, use thinking-block / XML syntax, or
+assume a context-window size. Exits non-zero on violations.
+
+```bash
+npm run cli -- neutral docs/my-skill.md
+# ✓ docs/my-skill.md: model-neutral
+```
+
 ## Provider selection
 
 The boundary judge picks a provider from environment variables — see the
-[Multi-LLM judge](/guide/providers) guide:
+[provider layer](/guide/providers) guide:
 
 ```bash
 ANTHROPIC_API_KEY=... npm run cli -- run <pipeline>   # or GEMINI_API_KEY / OPENAI_API_KEY
@@ -151,7 +176,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (28 tests) |
+| `npm test` | `node:test` suite (36 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

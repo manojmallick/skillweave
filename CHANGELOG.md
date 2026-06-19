@@ -6,6 +6,19 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-06-19
+
+### Added
+- Multi-LLM provider layer (#10) under `src/providers/` — an `LLMProviderAdapter` interface (`supports` / `selectModel` / `complete`) with `anthropic`, `google`, `openai`, and `ollama` (local, via `fetch`) adapters.
+- Provider capability profiles in `provider-profiles/*.profile.yaml` (model tier, context window, structured-output support, per-1k cost) + a loader.
+- Executor with auto model selection by tier + required capabilities and **primary → fallback** execution (`resolveTargets` / `runWithFallback`).
+- Neutral Skill Language validator — flags model/vendor names, thinking-block / XML syntax, and context-window assumptions.
+- Pipeline `executor` field (primary + fallback + requires) parsed by the loader.
+- CLI: `skillweave providers` and `skillweave neutral <file>`.
+
+### Changed
+- The boundary judge routes its LLM call through the provider layer (primary → fallback → offline heuristic); the judge's default model is now the provider's `balanced` tier (env model overrides still honored).
+
 ## [0.4.0] — 2026-06-19
 
 ### Added

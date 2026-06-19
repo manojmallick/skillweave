@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v0.5.0)
+
+- Multi-LLM provider layer — `LLMProviderAdapter` + anthropic/google/openai/ollama adapters, capability profiles, primary→fallback executor, and the Neutral Skill Language validator (#10)
+
 ## Recent Contributors (v0.4.0)
 
 - SigMap adapter layer — CONTEXT / COST / OBSERVE wrappers, `skillweave health`, and the `sigmap` CLI command (#7)
