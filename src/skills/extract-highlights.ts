@@ -28,6 +28,8 @@ export const extractHighlights: Skill = {
   does_not: "parse input, score groundedness, or persist memory",
   state_read: ["content_blocks"],
   state_write: ["highlights"],
+  input_schema: "content-block@1.1",
+  output_schema: "highlight@1.0",
   confidence_threshold: 0.8,
   retries: 2,
   golden_anchors: [

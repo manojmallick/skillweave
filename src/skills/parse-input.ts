@@ -33,6 +33,7 @@ export const parseInput: Skill = {
   does_not: "interpret meaning, judge quality, or call an LLM",
   state_read: ["raw_input"],
   state_write: ["content_blocks"],
+  output_schema: "content-block@1.1",
   assertions: [
     {
       statement: "at least one content block is produced",

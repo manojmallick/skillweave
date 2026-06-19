@@ -1,0 +1,11 @@
+{
+  "$id": "highlight@1.0",
+  "type": "object",
+  "properties": {
+    "block_id": { "type": "string" },
+    "text": { "type": "string" },
+    "confidence": { "type": "number" }
+  },
+  "required": ["block_id", "text", "confidence"],
+  "additionalProperties": false
+}

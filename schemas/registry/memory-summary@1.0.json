@@ -1,0 +1,12 @@
+{
+  "$id": "memory-summary@1.0",
+  "type": "object",
+  "properties": {
+    "records_total": { "type": "number" },
+    "avg_score_now": { "type": "number" },
+    "improved": { "type": ["boolean", "null"] },
+    "path": { "type": "string" }
+  },
+  "required": ["records_total", "path"],
+  "additionalProperties": false
+}

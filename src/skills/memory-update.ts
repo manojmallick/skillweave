@@ -33,6 +33,8 @@ export const memoryUpdate: Skill = {
   does_not: "extract content, score groundedness, or call an LLM",
   state_read: ["judge", "content_blocks"],
   state_write: ["memory"],
+  input_schema: "judge-verdict@1.0",
+  output_schema: "memory-summary@1.0",
   assertions: [
     {
       statement: "a memory record was persisted",
