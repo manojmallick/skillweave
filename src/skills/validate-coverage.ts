@@ -43,6 +43,7 @@ export const validateCoverage: Skill = {
   state_write: ["coverage"],
   input_schema: "content-block@1.1",
   output_schema: "coverage@1.0",
+  capabilities: [],
   assertions: [
     {
       statement: "coverage_score >= 0.70",

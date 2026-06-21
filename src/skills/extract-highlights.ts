@@ -30,6 +30,7 @@ export const extractHighlights: Skill = {
   state_write: ["highlights"],
   input_schema: "content-block@1.1",
   output_schema: "highlight@1.0",
+  capabilities: [],
   confidence_threshold: 0.8,
   retries: 2,
   golden_anchors: [

@@ -34,6 +34,7 @@ export const parseInput: Skill = {
   state_read: ["raw_input"],
   state_write: ["content_blocks"],
   output_schema: "content-block@1.1",
+  capabilities: [],
   assertions: [
     {
       statement: "at least one content block is produced",
