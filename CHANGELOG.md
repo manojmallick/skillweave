@@ -6,6 +6,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-06-21
+
+### Added
+- Security model (#17) under `src/security/` — a per-skill capability vocabulary (`fs:read` · `fs:write` · `net` · `env:read`) and a default-deny `SecurityPolicy`.
+- `DEFAULT_POLICY` grants only what the reference pipeline needs (`fs:read`/`fs:write`) and confines filesystem writes to the `traces/` and `.context/` roots.
+- `checkSkillPermissions` / `auditSkills` — a skill is permitted only if every declared capability is known and granted by the active policy.
+- `guardWrite` — a filesystem sandbox that asserts the `fs:write` capability and contains writes within the policy's roots, blocking `../` traversal escapes.
+- `redactSecrets` — scrubs provider API-key values from any string before it can reach a diagnostic or trace.
+- Skill contract gains an optional `capabilities` field; the four reference skills declare theirs (`memory-update` = `fs:read` + `fs:write`, routed through `guardWrite`).
+- CLI: `skillweave check-permissions` — audits every registered skill against `DEFAULT_POLICY`; exits non-zero on any ungranted or unknown capability.
+
+### Changed
+- The orchestrator runs a pre-flight permission check before each skill and halts an over-privileged skill — with secret-redacted diagnostics — without executing it. Pure skills carry zero overhead.
+
 ## [0.6.0] — 2026-06-19
 
 ### Added

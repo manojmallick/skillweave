@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v0.7.0)
+
+- Security model — per-skill capability permissions, a default-deny policy, the `guardWrite` filesystem sandbox, secret redaction, and `skillweave check-permissions` (#17)
+
 ## Recent Contributors (v0.6.0)
 
 - Schema governance — versioned registry, schema differ, additive-only rule, skill schema pins, and `skillweave check-schemas` (#13)

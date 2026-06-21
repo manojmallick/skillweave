@@ -1,15 +1,16 @@
 {
-  "version": "0.6.0",
-  "stage": "schema-governance",
-  "roadmap_target": "v0.7.0 — security model (per-skill permissions, sandboxing)",
+  "version": "0.7.0",
+  "stage": "security-model",
+  "roadmap_target": "v0.8.0 — SigMap pipeline integration (sigmap-verify)",
   "stats": {
     "base_skills": 3,
     "domain_skills": 4,
     "sigmap_adapters": 3,
     "provider_adapters": 4,
     "registry_schemas": 6,
-    "cli_commands": 11,
-    "tests": 43,
+    "capabilities": 4,
+    "cli_commands": 12,
+    "tests": 56,
     "npm_runtime_deps": 4
   },
   "providers": [
