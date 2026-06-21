@@ -80,7 +80,7 @@ parse-input  →  validate-coverage  →  extract-highlights  →  memory-update
 npm install
 npm start                            # run the built-in chain (offline heuristic judge)
 npm start -- --inject hallucination  # ungrounded → judge RETRIES → recovers
-npm test                             # node:test suite (43 tests)
+npm test                             # node:test suite (56 tests)
 ```
 
 Or drive it from the `skillweave` CLI:
@@ -89,7 +89,7 @@ Or drive it from the `skillweave` CLI:
 npm run cli -- run pipelines/document-grounding.pipeline.yaml
 npm run cli -- health                # composite 0–100 health score + grade
 npm run cli -- providers             # provider/model capability table
-npm run cli -- check-schemas         # validate the versioned schema registry
+npm run cli -- check-permissions     # audit each skill's capabilities vs the policy
 npm run cli -- validate pipelines/document-grounding.pipeline.yaml
 npm run cli -- list
 ```

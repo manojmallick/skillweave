@@ -28,6 +28,7 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `providers` | Provider/model capability table (tier · structured-output · cost) |
 | `neutral <file>` | Neutral Skill Language check (exit 1 on model-specific syntax) |
 | `check-schemas` | Validate the schema registry + skill pins + additive-only rule |
+| `check-permissions` | Audit each skill's capabilities against the security policy |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -175,6 +176,22 @@ npm run cli -- check-schemas
 # ✓ 6 schemas valid · 5 pins resolve · additive-only holds
 ```
 
+## `check-permissions`
+
+Audits the [security model](/guide/security): every registered skill's declared
+`capabilities` are checked against `DEFAULT_POLICY` (default-deny). A skill that requests
+a capability the policy does not grant — or one outside the known vocabulary — fails the
+gate. Exits non-zero on any violation.
+
+```bash
+npm run cli -- check-permissions
+#   parse-input          [pure]
+#   validate-coverage    [pure]
+#   extract-highlights   [pure]
+#   memory-update        [fs:read, fs:write]
+# ✓ 4 skills within policy (granted: fs:read, fs:write)
+```
+
 ## Provider selection
 
 The boundary judge picks a provider from environment variables — see the
@@ -190,7 +207,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (43 tests) |
+| `npm test` | `node:test` suite (56 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

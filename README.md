@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v0.6.0** — schema governance: a versioned schema registry, additive-only rule, and `skillweave check-schemas`.
+**Latest: v0.7.0** — security model: per-skill capability permissions, a default-deny policy, a filesystem sandbox, and `skillweave check-permissions`.
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (43 tests).
+Run the tests with `npm test` (56 tests).
 
 ## CLI
 
@@ -73,6 +73,7 @@ npm run cli -- sigmap cost --suggest-tool "refactor auth security"   # → tier:
 npm run cli -- providers                 # provider/model capability table
 npm run cli -- neutral docs/my-skill.md  # Neutral Skill Language check
 npm run cli -- check-schemas             # validate the schema registry + pins
+npm run cli -- check-permissions         # audit each skill's capabilities vs the policy
 ```
 
 Per-step `confidence_threshold` / `retries` in the YAML override a skill's defaults for
@@ -133,6 +134,7 @@ src/
   providers/               LLMProviderAdapter — anthropic/google/openai/ollama, profiles, executor, neutral validator
 provider-profiles/         per-provider capability YAML
   schemas/                 versioned schema registry loader + differ + check
+  security/                capability permissions · default-deny policy · guardWrite sandbox · redactSecrets
 schemas/registry/          <name>@<version>.json schema store
   base/
     base-io.ts             STATE writes (scope-enforced) + checkpoints   [frozen]

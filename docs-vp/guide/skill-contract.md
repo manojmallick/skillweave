@@ -23,6 +23,8 @@ and how it is verified.
 | `confidence_threshold` | — | Judge pass threshold (probabilistic) |
 | `retries` | — | Retry budget (probabilistic; default 2). Deterministic skills get 0 |
 | `golden_anchors` | — | Worked input/output examples fed to the judge |
+| `input_schema` / `output_schema` | — | Registry [schema](/guide/schemas) pins (`name@version`) |
+| `capabilities` | — | Side-effect [capabilities](/guide/security) the skill needs (absent == pure) |
 | `run(state, retry?)` | ✓ | Executes the skill; `retry` carries negative context |
 
 ## A deterministic skill
@@ -92,7 +94,10 @@ export const extractHighlights: Skill = {
 
 1. **Single responsibility** — one job per skill; everything else goes in `does_not`.
 2. **Declare your scope** — only read/write the STATE fields you list. `base-io` enforces it.
-3. **Neutral language** — skill instructions must run on any LLM provider; no
+3. **Declare your capabilities** — list every side effect (`fs:read` · `fs:write` · `net` ·
+   `env:read`) in `capabilities`; an undeclared or ungranted effect is halted by the
+   [security model](/guide/security) before the skill runs. Pure skills declare `[]`.
+4. **Neutral language** — skill instructions must run on any LLM provider; no
    model-specific syntax.
-4. **Classify honestly** — mark a skill `probabilistic` only if it makes
+5. **Classify honestly** — mark a skill `probabilistic` only if it makes
    non-deterministic decisions; deterministic skills must stay overhead-free.

@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 43 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 11 CLI commands · 4 runtime deps
+**Stats:** 56 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 12 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -74,12 +74,20 @@ breaking changes before they ship.
 **Tags:** versioned registry · schema pins · diffSchemas · additive-only · check-schemas
 **Impact:** 43-test `node:test` suite; schema changes are governed — a removed/retyped/newly-required field within a major fails the gate.
 
+### v0.7.0 — Security model ✓
+
+A per-skill [security model](/guide/security): a capability vocabulary
+(`fs:read` · `fs:write` · `net` · `env:read`), a default-deny `SecurityPolicy`, and a
+filesystem sandbox (`guardWrite`) that contains writes within the policy's roots and
+blocks `../` traversal. Skills declare a `capabilities` field; the orchestrator runs a
+pre-flight permission check and halts an over-privileged skill — with secret-redacted
+diagnostics — before it executes. `skillweave check-permissions` audits the whole
+registry against the policy.
+
+**Tags:** capability permissions · default-deny · guardWrite sandbox · redactSecrets · check-permissions
+**Impact:** 56-test `node:test` suite; a skill can do only what its declared capabilities allow, enforced before execution. Pure skills carry zero overhead.
+
 ## Planned
-
-### v0.7.0 — Security model → current milestone
-
-Per-skill permission scoping, sandboxed execution for community/experimental skills, and
-SigMap-inherited secret scanning in the pipeline.
 
 ### v0.8.0 — SigMap pipeline integration
 
@@ -98,4 +106,4 @@ platform (alerts, replay, A/B skill testing).
 
 ---
 
-**Current milestone:** v0.7.0 — security model (per-skill permission scoping, sandboxed execution, secret scan).
+**Current milestone:** v0.8.0 — SigMap pipeline integration (SkillWeave as SigMap's internal `sigmap-verify` execution architecture).
