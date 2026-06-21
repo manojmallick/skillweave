@@ -2,6 +2,7 @@
 // SKILL · PIPELINE · STATE · ASSERTION
 
 import type { ExecutorSpec } from "./providers/types.js";
+import type { Capability } from "./security/types.js";
 
 export type ExecutionClass = "deterministic" | "probabilistic" | "tool";
 
@@ -131,6 +132,8 @@ export interface Skill {
   input_schema?: string;
   /** Registry schema this skill writes, pinned as `name@version`. */
   output_schema?: string;
+  /** Side-effect capabilities this skill needs (absent == pure, no effects). */
+  capabilities?: Capability[];
   /** Executes the skill. `retry` carries negative context on a re-invocation. */
   run: (state: State, retry?: RetryContext) => Promise<SkillResult>;
 }

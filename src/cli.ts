@@ -11,6 +11,7 @@ import {
 } from "./adapters/index.js";
 import { checkNeutralLanguage, loadProfile } from "./providers/index.js";
 import { checkSchemas } from "./schemas/check.js";
+import { auditSkills, declaredCapabilities, DEFAULT_POLICY } from "./security/index.js";
 import { AssertionError, runAssertions } from "./base/base-assert.js";
 import { applyWrites } from "./base/base-io.js";
 import { judgeExecutorLabel } from "./judge.js";
@@ -62,6 +63,7 @@ Usage:
   skillweave providers
   skillweave neutral <file>
   skillweave check-schemas
+  skillweave check-permissions
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).`;
@@ -367,6 +369,29 @@ function cmdCheckSchemas(): number {
   return 1;
 }
 
+function cmdCheckPermissions(): number {
+  const skills = listSkills();
+  const results = auditSkills(skills, DEFAULT_POLICY);
+  for (const skill of skills) {
+    const declared = declaredCapabilities(skill);
+    console.log(`  ${skill.name.padEnd(20)} [${declared.join(", ") || "pure"}]`);
+  }
+  const violations = results.filter((r) => !r.ok);
+  for (const v of violations) {
+    const parts: string[] = [];
+    if (v.denied.length) parts.push(`denied: ${v.denied.join(", ")}`);
+    if (v.unknown.length) parts.push(`unknown: ${v.unknown.join(", ")}`);
+    console.log(`  ✗ ${v.skill} — ${parts.join("; ")}`);
+  }
+  const grant = DEFAULT_POLICY.capabilities.join(", ");
+  if (violations.length === 0) {
+    console.log(`✓ ${skills.length} skills within policy (granted: ${grant})`);
+    return 0;
+  }
+  console.log(`✗ check-permissions: ${violations.length} skill(s) outside policy`);
+  return 1;
+}
+
 export async function cli(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   switch (cmd) {
@@ -392,6 +417,8 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdNeutral(rest);
     case "check-schemas":
       return cmdCheckSchemas();
+    case "check-permissions":
+      return cmdCheckPermissions();
     case "version":
     case "--version":
     case "-v":

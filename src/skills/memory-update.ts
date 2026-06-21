@@ -4,6 +4,7 @@
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { DEFAULT_POLICY, guardWrite } from "../security/index.js";
 import type { MemorySummary, Skill, State } from "../types.js";
 
 const MEMORY_DIR = ".context";
@@ -35,6 +36,7 @@ export const memoryUpdate: Skill = {
   state_write: ["memory"],
   input_schema: "judge-verdict@1.0",
   output_schema: "memory-summary@1.0",
+  capabilities: ["fs:read", "fs:write"],
   assertions: [
     {
       statement: "a memory record was persisted",
@@ -62,6 +64,8 @@ export const memoryUpdate: Skill = {
       block_types: [...new Set(blocks.map((b) => b.type))],
     };
 
+    // Sandbox: confirm this skill may write MEMORY_PATH before touching disk.
+    guardWrite(memoryUpdate, MEMORY_PATH, DEFAULT_POLICY);
     mkdirSync(MEMORY_DIR, { recursive: true });
     appendFileSync(MEMORY_PATH, JSON.stringify(record) + "\n");
 

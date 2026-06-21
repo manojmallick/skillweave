@@ -11,6 +11,12 @@ import { AssertionError, runAssertions } from "./base/base-assert.js";
 import { applyWrites, checkpoint } from "./base/base-io.js";
 import { Tracer } from "./base/base-log.js";
 import { judge, lastJudgeCost } from "./judge.js";
+import {
+  checkSkillPermissions,
+  DEFAULT_POLICY,
+  redactSecrets,
+  type SecurityPolicy,
+} from "./security/index.js";
 import type { ConfidenceBand, Pipeline, RetryContext, Skill, State } from "./types.js";
 
 const CONF_HIGH = 0.85;
@@ -33,9 +39,10 @@ export async function runPipeline(
   pipeline: Pipeline,
   state: State,
   executor: string,
-  opts: { quiet?: boolean; observe?: ObservabilityProvider } = {},
+  opts: { quiet?: boolean; observe?: ObservabilityProvider; policy?: SecurityPolicy } = {},
 ): Promise<RunOutcome> {
   const tracer = new Tracer(state._meta.run_id);
+  const policy = opts.policy ?? DEFAULT_POLICY;
   const printHealth = () => {
     if (opts.quiet || !opts.observe) return;
     const h = opts.observe.health();
@@ -46,6 +53,33 @@ export async function runPipeline(
     const skill = pipeline.steps[i]!;
     const isProbabilistic = skill.execution_class === "probabilistic";
     const budget = isProbabilistic ? (skill.retries ?? DEFAULT_RETRIES) : 0;
+
+    // Pre-flight: a skill that requests an ungranted/unknown capability is
+    // denied (default-deny) and never runs — security halts before execution.
+    const perm = checkSkillPermissions(skill, policy);
+    if (!perm.ok) {
+      const reasons: string[] = [];
+      if (perm.denied.length) reasons.push(`denied capabilities: ${perm.denied.join(", ")}`);
+      if (perm.unknown.length) reasons.push(`unknown capabilities: ${perm.unknown.join(", ")}`);
+      const detail = [redactSecrets(`security: ${reasons.join("; ")}`)];
+      tracer.record({
+        pipeline: pipeline.name,
+        skill: skill.name,
+        class: skill.execution_class,
+        duration_ms: 0,
+        cost: 0,
+        judge_score: null,
+        confidence: null,
+        confidence_band: null,
+        attempt: 0,
+        status: "halted",
+        summary: "DENIED",
+        detail,
+      });
+      if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
+      printHealth();
+      return { status: "halted", state, haltedAt: skill.name };
+    }
 
     let attempt = 0;
     let retryCtx: RetryContext | undefined;
