@@ -1,16 +1,16 @@
 {
-  "version": "0.7.0",
-  "stage": "security-model",
-  "roadmap_target": "v0.8.0 — SigMap pipeline integration (sigmap-verify)",
+  "version": "0.8.0",
+  "stage": "sigmap-integration",
+  "roadmap_target": "v1.0.0 — registry + public launch (tiered registry, quality gate, publish/install)",
   "stats": {
     "base_skills": 3,
-    "domain_skills": 4,
+    "domain_skills": 5,
     "sigmap_adapters": 3,
     "provider_adapters": 4,
     "registry_schemas": 6,
     "capabilities": 4,
-    "cli_commands": 12,
-    "tests": 56,
+    "cli_commands": 13,
+    "tests": 63,
     "npm_runtime_deps": 4
   },
   "providers": [
