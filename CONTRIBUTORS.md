@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v0.8.0)
+
+- SigMap pipeline integration — the `load-context` skill, the `sigmap-verify` pipeline, the `runSigMapVerify` in-process API + `src/index.ts` barrel, and `skillweave verify` (#20)
+
 ## Recent Contributors (v0.7.0)
 
 - Security model — per-skill capability permissions, a default-deny policy, the `guardWrite` filesystem sandbox, secret redaction, and `skillweave check-permissions` (#17)

@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v0.7.0** — security model: per-skill capability permissions, a default-deny policy, a filesystem sandbox, and `skillweave check-permissions`.
+**Latest: v0.8.0** — SigMap pipeline integration: the `sigmap-verify` pipeline, the `runSigMapVerify` in-process API (`src/index.ts`), and `skillweave verify`.
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (56 tests).
+Run the tests with `npm test` (63 tests).
 
 ## CLI
 
@@ -74,6 +74,7 @@ npm run cli -- providers                 # provider/model capability table
 npm run cli -- neutral docs/my-skill.md  # Neutral Skill Language check
 npm run cli -- check-schemas             # validate the schema registry + pins
 npm run cli -- check-permissions         # audit each skill's capabilities vs the policy
+npm run cli -- verify --input ./doc.md   # run the sigmap-verify pipeline → structured verdict
 ```
 
 Per-step `confidence_threshold` / `retries` in the YAML override a skill's defaults for
@@ -135,12 +136,15 @@ src/
 provider-profiles/         per-provider capability YAML
   schemas/                 versioned schema registry loader + differ + check
   security/                capability permissions · default-deny policy · guardWrite sandbox · redactSecrets
+  sigmap-verify.ts         runSigMapVerify() → VerifyResult — SigMap's in-process verify entry
+  index.ts                 public API barrel (runSigMapVerify · runPipeline · registry · security · adapters)
 schemas/registry/          <name>@<version>.json schema store
   base/
     base-io.ts             STATE writes (scope-enforced) + checkpoints   [frozen]
     base-assert.ts         runs declared assertions; failure halts        [frozen]
     base-log.ts            NDJSON trace + execution summary               [frozen]
   skills/
+    load-context.ts        deterministic — source raw_input from SigMap's CONTEXT
     parse-input.ts         deterministic — extract content blocks
     validate-coverage.ts   deterministic — assert coverage >= 0.70
     extract-highlights.ts  probabilistic — select highlights w/ confidence (judged + retried)
@@ -149,6 +153,7 @@ schemas/registry/          <name>@<version>.json schema store
 bin/skillweave.mjs         CLI launcher (tsx-backed)
 pipelines/
   document-grounding.pipeline.yaml   runnable pipeline contract
+  sigmap-verify.pipeline.yaml        SigMap's internal verify pipeline
 scripts/                   sync-versions · run-reliability-benchmark
 test/                      node:test suite (npm test)
 ```
