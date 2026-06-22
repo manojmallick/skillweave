@@ -1,0 +1,55 @@
+# sigmap-verify.pipeline.yaml
+# SkillWeave v0.8.0 — SigMap's internal verify pipeline (human-readable contract).
+# Sources input from SigMap's CONTEXT artifact, then runs ask -> validate -> judge
+# -> learn with the reliability layer. The programmatic form is runSigMapVerify()
+# (src/sigmap-verify.ts); the runtime in src/ is the executable version.
+
+name: sigmap-verify
+version: 0.8.0
+domain: sigmap
+description: "load SigMap context -> validate -> judge -> learn, confidence-routed + retried"
+
+executor:
+  primary: anthropic/claude-opus-4-8
+  fallback: [google/gemini-2.5-flash, openai/gpt-4o-mini]
+  requires: [structured_output]
+  # When no provider key is set the judge uses the offline heuristic scorer.
+
+checkpoint: after_each_skill
+on_failure: halt_and_expose
+
+reliability:
+  confidence_routing:
+    high: ">= 0.85 proceed"
+    review: "0.65 - 0.85 proceed and flag in trace"
+    low: "< 0.65 retry"
+  retry_with_negative_context: true
+  retry_budget: 2
+  auto_judge_at_probabilistic_boundary: true
+
+pipeline:
+  - skill: load-context          # SigMap integration — reads .context/query-context.md
+    execution_class: deterministic
+    asserts: ["raw_input is non-empty after loading context"]
+
+  - skill: parse-input           # maps to: sigmap ask
+    execution_class: deterministic
+    depends_on: load-context
+    asserts: ["at least one content block is produced"]
+
+  - skill: validate-coverage     # maps to: sigmap validate
+    execution_class: deterministic
+    depends_on: parse-input
+    asserts: ["coverage_score >= 0.70"]
+
+  - skill: extract-highlights    # probabilistic boundary — judged + routed + retried
+    execution_class: probabilistic
+    depends_on: validate-coverage
+    confidence_threshold: 0.80
+    retries: 2
+    golden_anchors: 1
+
+  - skill: memory-update         # maps to: sigmap learn
+    execution_class: deterministic
+    depends_on: extract-highlights
+    writes: .context/skillweave-memory.ndjson

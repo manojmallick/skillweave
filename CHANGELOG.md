@@ -6,6 +6,16 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-06-22
+
+### Added
+- SigMap pipeline integration (#20) — SkillWeave can now be embedded as SigMap's internal execution architecture.
+- `load-context` skill (deterministic, `fs:read`) sources `raw_input` from SigMap's CONTEXT artifact (`.context/query-context.md`) via the `SigMapContextAdapter`, passing through input that is already provided.
+- `sigmap-verify` pipeline (`pipelines/sigmap-verify.pipeline.yaml`) — `load-context → parse-input → validate-coverage → extract-highlights → memory-update`.
+- `runSigMapVerify(opts)` — a programmatic entry that runs the verify pipeline through the orchestrator and returns a structured `VerifyResult` (`status` · `grounded` · `judge_score` · `coverage` · `highlights` · `halted_at?` · `health`), with no shell spawn and no CLI.
+- Public API barrel `src/index.ts` re-exporting `runSigMapVerify` / `VerifyResult` / `runPipeline` and the registry, security, and adapter surface.
+- CLI: `skillweave verify [--input <file>] [--context <dir>]` — runs the verify pipeline and prints the verdict; exits non-zero on a halt.
+
 ## [0.7.0] — 2026-06-21
 
 ### Added

@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 56 tests passing · 3 frozen base skills · 4 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 12 CLI commands · 4 runtime deps
+**Stats:** 63 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 13 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -87,12 +87,18 @@ registry against the policy.
 **Tags:** capability permissions · default-deny · guardWrite sandbox · redactSecrets · check-permissions
 **Impact:** 56-test `node:test` suite; a skill can do only what its declared capabilities allow, enforced before execution. Pure skills carry zero overhead.
 
+### v0.8.0 — SigMap pipeline integration ✓
+
+SkillWeave becomes SigMap's internal execution architecture. A [`load-context`](/guide/sigmap-verify)
+skill sources `raw_input` from SigMap's CONTEXT artifact, the `sigmap-verify` pipeline runs
+the ask→validate→judge→learn verify flow, and `runSigMapVerify()` (exported from
+`src/index.ts`) returns a structured `VerifyResult` so SigMap can embed the runtime
+in-process — no shell spawn, no CLI. Also `skillweave verify`.
+
+**Tags:** load-context · sigmap-verify pipeline · runSigMapVerify · VerifyResult · public API barrel · check verify
+**Impact:** 63-test `node:test` suite; SigMap consumes SkillWeave as a library, verifying its own context through the same reliability layer.
+
 ## Planned
-
-### v0.8.0 — SigMap pipeline integration
-
-SkillWeave becomes SigMap's internal execution architecture via the `sigmap-verify`
-pipeline.
 
 ### v1.0.0 — Registry + public launch
 
@@ -106,4 +112,4 @@ platform (alerts, replay, A/B skill testing).
 
 ---
 
-**Current milestone:** v0.8.0 — SigMap pipeline integration (SkillWeave as SigMap's internal `sigmap-verify` execution architecture).
+**Current milestone:** v1.0.0 — registry + public launch (tiered registry, a quality gate, runtime reputation, and `publish` / `install`).

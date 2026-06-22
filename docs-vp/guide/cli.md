@@ -29,6 +29,7 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `neutral <file>` | Neutral Skill Language check (exit 1 on model-specific syntax) |
 | `check-schemas` | Validate the schema registry + skill pins + additive-only rule |
 | `check-permissions` | Audit each skill's capabilities against the security policy |
+| `verify [--input <file>] [--context <dir>]` | Run the `sigmap-verify` pipeline and print the verdict |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -185,12 +186,37 @@ gate. Exits non-zero on any violation.
 
 ```bash
 npm run cli -- check-permissions
+#   load-context         [fs:read]
 #   parse-input          [pure]
 #   validate-coverage    [pure]
 #   extract-highlights   [pure]
 #   memory-update        [fs:read, fs:write]
-# ✓ 4 skills within policy (granted: fs:read, fs:write)
+# ✓ 5 skills within policy (granted: fs:read, fs:write)
 ```
+
+## `verify`
+
+Runs the [`sigmap-verify`](/guide/sigmap-verify) pipeline — SkillWeave's verify flow for
+SigMap. With no `--input`, the `load-context` skill sources the input from SigMap's CONTEXT
+artifact (`.context/query-context.md`); `--context <dir>` points it at a different context
+directory. Prints a structured verdict and exits non-zero on a halt.
+
+```bash
+npm run cli -- verify --input ./notes/q3.md
+# sigmap-verify: success
+#   grounded   : true (judge 1)
+#   coverage   : 1
+#   highlights : 2
+#   health     : C (72/100)
+```
+
+| Flag | Effect |
+|------|--------|
+| `--input <file>` | Verify a file instead of SigMap's CONTEXT artifact |
+| `--context <dir>` | Read the CONTEXT artifact from `<dir>` instead of `.context/` |
+
+The same run is available in-process as `runSigMapVerify()` — see the
+[SigMap verify](/guide/sigmap-verify) guide.
 
 ## Provider selection
 
@@ -207,7 +233,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (56 tests) |
+| `npm test` | `node:test` suite (63 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

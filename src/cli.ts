@@ -18,6 +18,7 @@ import { judgeExecutorLabel } from "./judge.js";
 import { runPipeline } from "./orchestrator.js";
 import { loadPipeline, PipelineError, validatePipelineFile } from "./pipeline-loader.js";
 import { getSkill, listSkills } from "./registry.js";
+import { runSigMapVerify } from "./sigmap-verify.js";
 import { SAMPLE_DOC, THIN_DOC } from "./sample-doc.js";
 import type { State } from "./types.js";
 import { VERSION } from "./version.js";
@@ -57,6 +58,7 @@ Usage:
   skillweave list [skills|pipelines]
   skillweave trace [last]
   skillweave new pipeline|skill <name>
+  skillweave verify [--input <file>] [--context <dir>]
   skillweave health
   skillweave sigmap context [--query <q>]
   skillweave sigmap cost [--suggest-tool <task>]
@@ -392,6 +394,21 @@ function cmdCheckPermissions(): number {
   return 1;
 }
 
+async function cmdVerify(rest: string[]): Promise<number> {
+  const { flags } = parseArgs(rest);
+  if (typeof flags.context === "string") process.env.SIGMAP_CONTEXT_DIR = flags.context;
+  const input = typeof flags.input === "string" ? readFileSync(flags.input, "utf8") : undefined;
+
+  const result = await runSigMapVerify({ input });
+  console.log(`sigmap-verify: ${result.status}`);
+  console.log(`  grounded   : ${result.grounded}${result.judge_score != null ? ` (judge ${result.judge_score})` : ""}`);
+  console.log(`  coverage   : ${result.coverage ?? "n/a"}`);
+  console.log(`  highlights : ${result.highlights}`);
+  console.log(`  health     : ${result.health.grade} (${result.health.score}/100)`);
+  if (result.halted_at) console.log(`  halted at  : ${result.halted_at}`);
+  return result.status === "success" ? 0 : 1;
+}
+
 export async function cli(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   switch (cmd) {
@@ -419,6 +436,8 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdCheckSchemas();
     case "check-permissions":
       return cmdCheckPermissions();
+    case "verify":
+      return cmdVerify(rest);
     case "version":
     case "--version":
     case "-v":
