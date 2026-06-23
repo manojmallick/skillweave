@@ -10,4 +10,5 @@ export { loadPipeline, validatePipelineFile, PipelineError } from "./pipeline-lo
 export * from "./types.js";
 export * from "./security/index.js";
 export * from "./adapters/index.js";
+export * from "./catalog/index.js";
 export { VERSION } from "./version.js";

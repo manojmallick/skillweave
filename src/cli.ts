@@ -12,6 +12,13 @@ import {
 import { checkNeutralLanguage, loadProfile } from "./providers/index.js";
 import { checkSchemas } from "./schemas/check.js";
 import { auditSkills, declaredCapabilities, DEFAULT_POLICY } from "./security/index.js";
+import {
+  CatalogError,
+  gradeSkill,
+  installSkill,
+  listRegistry,
+  publishSkill,
+} from "./catalog/index.js";
 import { AssertionError, runAssertions } from "./base/base-assert.js";
 import { applyWrites } from "./base/base-io.js";
 import { judgeExecutorLabel } from "./judge.js";
@@ -66,6 +73,9 @@ Usage:
   skillweave neutral <file>
   skillweave check-schemas
   skillweave check-permissions
+  skillweave publish <skill>
+  skillweave install <skill>
+  skillweave registry [list]
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).`;
@@ -409,6 +419,67 @@ async function cmdVerify(rest: string[]): Promise<number> {
   return result.status === "success" ? 0 : 1;
 }
 
+function cmdPublish(rest: string[]): number {
+  const { positionals } = parseArgs(rest);
+  const name = positionals[0];
+  if (!name) {
+    console.error("publish: missing <skill>");
+    return 2;
+  }
+  const skill = getSkill(name);
+  if (!skill) {
+    console.error(`publish: unknown skill '${name}' (try: skillweave list)`);
+    return 1;
+  }
+  const report = gradeSkill(skill);
+  for (const c of report.checks) console.log(`  ${c.ok ? "✓" : "✗"} ${c.label}`);
+  try {
+    const entry = publishSkill(skill);
+    console.log(`✓ published ${entry.name} — ${entry.tier} (${entry.points}/${report.max} · reputation ${entry.reputation})`);
+    return 0;
+  } catch (err) {
+    if (err instanceof CatalogError) {
+      console.log(`✗ ${err.message}`);
+      return 1;
+    }
+    throw err;
+  }
+}
+
+function cmdInstall(rest: string[]): number {
+  const { positionals } = parseArgs(rest);
+  const name = positionals[0];
+  if (!name) {
+    console.error("install: missing <skill>");
+    return 2;
+  }
+  const entry = installSkill(name);
+  if (!entry) {
+    console.error(`install: '${name}' is not in the registry (try: skillweave registry)`);
+    return 1;
+  }
+  console.log(`${entry.name}@${entry.version} — ${entry.tier} (${entry.points}/9 · reputation ${entry.reputation})`);
+  console.log(`  published ${entry.published_at}`);
+  return 0;
+}
+
+function cmdRegistry(): number {
+  const entries = listRegistry();
+  if (!entries.length) {
+    console.log("(registry empty — publish a skill first)");
+    return 0;
+  }
+  for (const tier of ["verified", "community", "experimental"] as const) {
+    const inTier = entries.filter((e) => e.tier === tier);
+    if (!inTier.length) continue;
+    console.log(tier);
+    for (const e of inTier) {
+      console.log(`  ${e.name.padEnd(20)} ${e.points}/9   reputation ${e.reputation}`);
+    }
+  }
+  return 0;
+}
+
 export async function cli(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   switch (cmd) {
@@ -438,6 +509,12 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdCheckPermissions();
     case "verify":
       return cmdVerify(rest);
+    case "publish":
+      return cmdPublish(rest);
+    case "install":
+      return cmdInstall(rest);
+    case "registry":
+      return cmdRegistry();
     case "version":
     case "--version":
     case "-v":
