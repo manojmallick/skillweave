@@ -1,7 +1,7 @@
 {
-  "version": "0.8.0",
-  "stage": "sigmap-integration",
-  "roadmap_target": "v1.0.0 — registry + public launch (tiered registry, quality gate, publish/install)",
+  "version": "1.0.0",
+  "stage": "public-launch",
+  "roadmap_target": "v2.0.0 — COMPOSE + OBSERVE (composition patterns + full observability platform)",
   "stats": {
     "base_skills": 3,
     "domain_skills": 5,
@@ -9,8 +9,10 @@
     "provider_adapters": 4,
     "registry_schemas": 6,
     "capabilities": 4,
-    "cli_commands": 13,
-    "tests": 63,
+    "registry_tiers": 3,
+    "quality_gate_checks": 9,
+    "cli_commands": 16,
+    "tests": 71,
     "npm_runtime_deps": 4
   },
   "providers": [

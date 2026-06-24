@@ -6,6 +6,19 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-06-24
+
+First stable release — the public-launch surface. The `src/index.ts` API is now the supported integration point.
+
+### Added
+- Skill registry + public launch (#24) under `src/catalog/` — a tiered, quality-gated, local-first registry of published skills.
+- 9-point quality gate — `gradeSkill(skill)` scores a contract on name · `does` · `does_not` · state scope · capabilities · assertions · schema pin · model-neutral language · coherent classification, returning a `QualityReport` with points and tier.
+- Trust tiers from the gate — `verified` (9/9) · `community` (6–8) · `experimental` (3–5); below the experimental floor (<3) publishing is refused.
+- Quality-derived reputation — each entry stores `reputation = round(points / 9 * 100)`.
+- File-backed store at `.registry/skills.json` (gitignored, no network) — `publishSkill` / `installSkill` / `listRegistry`.
+- CLI: `skillweave publish <skill>` · `install <skill>` · `registry [list]`.
+- `src/index.ts` re-exports the catalog surface (`gradeSkill` / `publishSkill` / `installSkill` / `listRegistry` + types).
+
 ## [0.8.0] — 2026-06-22
 
 ### Added

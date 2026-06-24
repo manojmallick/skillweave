@@ -1,4 +1,4 @@
 // Single source of truth for the runtime version.
 // Synced across package.json / package-lock.json / version.json by
 // scripts/sync-versions.mjs — do not hand-edit in isolation.
-export const VERSION = "0.8.0";
+export const VERSION = "1.0.0";
