@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 63 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 13 CLI commands · 4 runtime deps
+**Stats:** 71 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 16 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -98,12 +98,18 @@ in-process — no shell spawn, no CLI. Also `skillweave verify`.
 **Tags:** load-context · sigmap-verify pipeline · runSigMapVerify · VerifyResult · public API barrel · check verify
 **Impact:** 63-test `node:test` suite; SigMap consumes SkillWeave as a library, verifying its own context through the same reliability layer.
 
+### v1.0.0 — Registry + public launch ✓
+
+The first stable release. A tiered, quality-gated [skill registry](/guide/registry): the
+9-point `gradeSkill` quality gate assigns a trust tier (`verified` / `community` /
+`experimental`), each entry carries a quality-derived reputation, and a local-first store
+(`.registry/skills.json`) backs `publish` / `install` / `registry`. The `src/index.ts` API
+is now the supported integration surface.
+
+**Tags:** skill catalog · 9-point quality gate · trust tiers · reputation · publish/install/registry · stable public API
+**Impact:** 71-test `node:test` suite; skills can be graded, tiered, published, and installed locally. (Runtime reputation is seeded from the quality score; trace-history reputation is a follow-up.)
+
 ## Planned
-
-### v1.0.0 — Registry + public launch
-
-Tiered registry (Verified / Community / Experimental), a 9-point quality gate, runtime
-reputation, and `publish` / `install`.
 
 ### v2.0.0 — COMPOSE + OBSERVE
 
@@ -112,4 +118,4 @@ platform (alerts, replay, A/B skill testing).
 
 ---
 
-**Current milestone:** v1.0.0 — registry + public launch (tiered registry, a quality gate, runtime reputation, and `publish` / `install`).
+**Current milestone:** v2.0.0 — COMPOSE + OBSERVE (composition patterns — reduce / conditional / loop / DAG — and the full observability platform: alerts, replay, A/B skill testing).

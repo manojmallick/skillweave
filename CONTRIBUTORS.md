@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v1.0.0)
+
+- Registry + public launch — the tiered skill catalog, the 9-point quality gate, quality-derived reputation, the local-first `publish` / `install` / `registry` commands, and the stable `src/index.ts` API (#24)
+
 ## Recent Contributors (v0.8.0)
 
 - SigMap pipeline integration — the `load-context` skill, the `sigmap-verify` pipeline, the `runSigMapVerify` in-process API + `src/index.ts` barrel, and `skillweave verify` (#20)

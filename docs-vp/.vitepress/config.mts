@@ -47,6 +47,7 @@ export default defineConfig({
           { text: "SigMap verify", link: "/guide/sigmap-verify" },
           { text: "Schema governance", link: "/guide/schemas" },
           { text: "Security model", link: "/guide/security" },
+          { text: "Skill registry", link: "/guide/registry" },
           { text: "CLI", link: "/guide/cli" },
         ],
       },
