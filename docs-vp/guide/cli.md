@@ -30,6 +30,9 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `check-schemas` | Validate the schema registry + skill pins + additive-only rule |
 | `check-permissions` | Audit each skill's capabilities against the security policy |
 | `verify [--input <file>] [--context <dir>]` | Run the `sigmap-verify` pipeline and print the verdict |
+| `publish <skill>` | Grade a skill and publish it to the registry |
+| `install <skill>` | Look up a published skill in the registry |
+| `registry [list]` | List published skills grouped by tier |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -218,6 +221,32 @@ npm run cli -- verify --input ./notes/q3.md
 The same run is available in-process as `runSigMapVerify()` — see the
 [SigMap verify](/guide/sigmap-verify) guide.
 
+## `publish` / `install` / `registry`
+
+The [skill registry](/guide/registry) — a tiered, quality-gated, local-first catalog of
+published skills. `publish` runs the [9-point quality gate](/guide/registry), assigns a
+trust tier (`verified` / `community` / `experimental`), and writes the entry to
+`.registry/skills.json`; a skill below the experimental floor is refused. `install` looks an
+entry up; `registry` lists the catalog by tier.
+
+```bash
+npm run cli -- publish extract-highlights
+#   ✓ name is kebab-case
+#   ... (9 checks)
+# ✓ published extract-highlights — verified (9/9 · reputation 100)
+
+npm run cli -- registry
+# verified
+#   extract-highlights   9/9   reputation 100
+
+npm run cli -- install extract-highlights
+# extract-highlights@1.0.0 — verified (9/9 · reputation 100)
+```
+
+`publish` exits `1` when a skill is rejected (below the experimental floor); `install` exits
+`1` when the skill is not in the registry. The same surface is available in-process via
+`gradeSkill` / `publishSkill` / `installSkill` / `listRegistry` from the package entry.
+
 ## Provider selection
 
 The boundary judge picks a provider from environment variables — see the
@@ -233,7 +262,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (63 tests) |
+| `npm test` | `node:test` suite (71 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 
