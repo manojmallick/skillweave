@@ -25,6 +25,7 @@ import { judgeExecutorLabel } from "./judge.js";
 import { runPipeline } from "./orchestrator.js";
 import { loadPipeline, PipelineError, validatePipelineFile } from "./pipeline-loader.js";
 import { getSkill, listSkills } from "./registry.js";
+import { closest, runDoctor } from "./dx/index.js";
 import { runSigMapVerify } from "./sigmap-verify.js";
 import { SAMPLE_DOC, THIN_DOC } from "./sample-doc.js";
 import type { State } from "./types.js";
@@ -59,6 +60,7 @@ function parseArgs(rest: string[]): Args {
 const USAGE = `skillweave v${VERSION}
 
 Usage:
+  skillweave doctor
   skillweave run <pipeline.yaml> [--doc <path>] [--inject <mode>]
   skillweave validate <pipeline.yaml>
   skillweave test <skill> [--input <state.json>]
@@ -78,7 +80,21 @@ Usage:
   skillweave registry [list]
 
 Inject modes: lowconf · hallucination · persistent · coverage
-Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).`;
+Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).
+New here? Run \`skillweave doctor\`.`;
+
+/** Top-level commands, used for "did you mean?" suggestions. */
+const COMMANDS = [
+  "doctor", "run", "validate", "test", "list", "trace", "new", "verify",
+  "health", "sigmap", "providers", "neutral", "check-schemas", "check-permissions",
+  "publish", "install", "registry", "version", "help",
+];
+
+/** "did you mean?" hint for an unknown skill name (empty when nothing is close). */
+function suggestSkill(name: string): string {
+  const hit = closest(name, listSkills().map((s) => s.name));
+  return hit ? ` — did you mean '${hit}'?` : "";
+}
 
 function makeState(inject: State["_meta"]["inject"], raw: string): State {
   const runId = `run-${new Date().toISOString().replace(/[:.]/g, "-")}`;
@@ -153,7 +169,7 @@ async function cmdTest(rest: string[]): Promise<number> {
   }
   const skill = getSkill(name);
   if (!skill) {
-    console.error(`test: unknown skill '${name}' (try: skillweave list)`);
+    console.error(`test: unknown skill '${name}'${suggestSkill(name)} (try: skillweave list)`);
     return 1;
   }
 
@@ -428,7 +444,7 @@ function cmdPublish(rest: string[]): number {
   }
   const skill = getSkill(name);
   if (!skill) {
-    console.error(`publish: unknown skill '${name}' (try: skillweave list)`);
+    console.error(`publish: unknown skill '${name}'${suggestSkill(name)} (try: skillweave list)`);
     return 1;
   }
   const report = gradeSkill(skill);
@@ -455,7 +471,7 @@ function cmdInstall(rest: string[]): number {
   }
   const entry = installSkill(name);
   if (!entry) {
-    console.error(`install: '${name}' is not in the registry (try: skillweave registry)`);
+    console.error(`install: '${name}' is not in the registry${suggestSkill(name)} (try: skillweave registry)`);
     return 1;
   }
   console.log(`${entry.name}@${entry.version} — ${entry.tier} (${entry.points}/9 · reputation ${entry.reputation})`);
@@ -480,9 +496,26 @@ function cmdRegistry(): number {
   return 0;
 }
 
+function cmdDoctor(): number {
+  const report = runDoctor();
+  console.log(`skillweave v${VERSION} — doctor\n`);
+  for (const c of report.checks) {
+    const mark = c.status === "ok" ? "✓" : c.status === "warn" ? "✗" : "•";
+    console.log(`  ${mark} ${c.label.padEnd(15)} ${c.detail}`);
+  }
+  console.log(
+    report.ready
+      ? "\n✓ ready — you can run `skillweave run` now (offline by default)."
+      : "\n✗ not ready — resolve the ✗ check above.",
+  );
+  return 0;
+}
+
 export async function cli(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
   switch (cmd) {
+    case "doctor":
+      return cmdDoctor();
     case "run":
       return cmdRun(rest);
     case "validate":
@@ -526,9 +559,13 @@ export async function cli(argv: string[]): Promise<number> {
     case "-h":
       console.log(USAGE);
       return 0;
-    default:
-      console.error(`unknown command: ${cmd}\n\n${USAGE}`);
+    default: {
+      const hint = closest(cmd ?? "", COMMANDS);
+      console.error(
+        `unknown command: ${cmd}${hint ? ` — did you mean '${hint}'?` : ""}\n\n${USAGE}`,
+      );
       return 2;
+    }
   }
 }
 
