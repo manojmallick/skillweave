@@ -4,7 +4,15 @@
 import { readFileSync } from "node:fs";
 import { parse } from "yaml";
 import { getSkill } from "./registry.js";
+import type { EventRoute, EventSubscription, EventType } from "./events/types.js";
+import type { TriggerSpec, TriggerType } from "./triggers/types.js";
 import type { Pipeline, Skill } from "./types.js";
+
+const TRIGGER_TYPES: TriggerType[] = [
+  "manual", "file_watch", "git_hook", "git_diff", "webhook", "cron", "pipeline_completion",
+];
+const EVENT_TYPES: EventType[] = ["info", "warning", "alert", "failure"];
+const EVENT_ROUTES: EventRoute[] = ["trace-log", "webhook", "human"];
 
 export interface ValidationIssue {
   level: "error" | "warning";
@@ -44,6 +52,34 @@ export function validatePipelineDoc(doc: unknown): ValidationIssue[] {
     const ex = d.executor as Record<string, unknown>;
     if (typeof ex !== "object" || typeof ex.primary !== "string") {
       error("executor: must declare a string `primary` provider");
+    }
+  }
+
+  if (d.trigger != null) {
+    const t = d.trigger as Record<string, unknown>;
+    if (typeof t !== "object" || !TRIGGER_TYPES.includes(t.type as TriggerType)) {
+      error(`trigger: type must be one of ${TRIGGER_TYPES.join(" | ")}`);
+    } else if (t.type === "cron" && typeof t.cron !== "string") {
+      error("trigger: a cron trigger must declare a `cron` expression");
+    }
+  }
+
+  if (d.events != null) {
+    if (!Array.isArray(d.events)) {
+      error("events: must be a list of subscriptions");
+    } else {
+      d.events.forEach((raw, i) => {
+        const e = raw as Record<string, unknown>;
+        const where = `events[${i}]`;
+        if (typeof e?.on !== "string") error(`${where}: missing 'on'`);
+        if (!EVENT_TYPES.includes(e?.emit as EventType)) {
+          error(`${where}: 'emit' must be one of ${EVENT_TYPES.join(" | ")}`);
+        }
+        const notify = e?.notify;
+        if (!Array.isArray(notify) || notify.some((r) => !EVENT_ROUTES.includes(r as EventRoute))) {
+          error(`${where}: 'notify' must be a list of ${EVENT_ROUTES.join(" | ")}`);
+        }
+      });
     }
   }
 
@@ -127,11 +163,24 @@ export function loadPipeline(path: string): Pipeline {
       }
     : undefined;
 
+  const trigger = doc.trigger ? (doc.trigger as TriggerSpec) : undefined;
+
+  const events: EventSubscription[] | undefined = Array.isArray(doc.events)
+    ? (doc.events as Record<string, unknown>[]).map((e) => ({
+        on: String(e.on),
+        emit: e.emit as EventType,
+        notify: e.notify as EventRoute[],
+        continue: e.continue !== false, // default true
+      }))
+    : undefined;
+
   return {
     name: String(doc.name),
     version: String(doc.version),
     domain: String(doc.domain),
     steps,
     ...(executor ? { executor } : {}),
+    ...(trigger ? { trigger } : {}),
+    ...(events ? { events } : {}),
   };
 }
