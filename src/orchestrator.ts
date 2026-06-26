@@ -17,6 +17,7 @@ import {
   redactSecrets,
   type SecurityPolicy,
 } from "./security/index.js";
+import type { EventBus } from "./events/index.js";
 import type { ConfidenceBand, Pipeline, RetryContext, Skill, State } from "./types.js";
 
 const CONF_HIGH = 0.85;
@@ -39,10 +40,17 @@ export async function runPipeline(
   pipeline: Pipeline,
   state: State,
   executor: string,
-  opts: { quiet?: boolean; observe?: ObservabilityProvider; policy?: SecurityPolicy } = {},
+  opts: {
+    quiet?: boolean;
+    observe?: ObservabilityProvider;
+    policy?: SecurityPolicy;
+    events?: EventBus;
+  } = {},
 ): Promise<RunOutcome> {
   const tracer = new Tracer(state._meta.run_id);
   const policy = opts.policy ?? DEFAULT_POLICY;
+  const emit = (on: string, message: string, data?: Record<string, unknown>) =>
+    opts.events?.emit(on, { source: pipeline.name, message, ...(data ? { data } : {}) });
   const printHealth = () => {
     if (opts.quiet || !opts.observe) return;
     const h = opts.observe.health();
@@ -76,6 +84,7 @@ export async function runPipeline(
         summary: "DENIED",
         detail,
       });
+      emit("skill_failed", `${skill.name} denied by security policy`, { skill: skill.name });
       if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
       printHealth();
       return { status: "halted", state, haltedAt: skill.name };
@@ -145,6 +154,12 @@ export async function runPipeline(
 
       if (!failure) {
         tracer.record({ ...base, status: "success", summary: result.summary });
+        if (band === "review") {
+          emit("low_confidence_detected", `${skill.name} confidence in review band`, {
+            skill: skill.name,
+            confidence: result.confidence,
+          });
+        }
         break;
       }
 
@@ -158,12 +173,14 @@ export async function runPipeline(
       const detail = [failure];
       if (budget > 0) detail.push(`exhausted retry budget (${budget})`);
       tracer.record({ ...base, status: "halted", summary: "FAILED", detail });
+      emit("skill_failed", `${skill.name} failed: ${failure}`, { skill: skill.name });
       if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
       printHealth();
       return { status: "halted", state, haltedAt: skill.name };
     }
   }
 
+  emit("pipeline_succeeded", `${pipeline.name} completed`);
   if (!opts.quiet) tracer.printSummary(pipeline.name, pipeline.version, executor);
   printHealth();
   return { status: "success", state };
