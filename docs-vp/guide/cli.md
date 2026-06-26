@@ -17,6 +17,7 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 
 | Command | What it does |
 |---------|--------------|
+| `doctor` | One-command readiness report (Node · judge provider · skills · registry) |
 | `run <pipeline.yaml> [--doc <path>] [--inject <mode>]` | Load + execute a pipeline |
 | `validate <pipeline.yaml>` | Structural + reference check, no execution |
 | `test <skill> [--input <state.json>]` | Run a single skill in isolation |
@@ -35,6 +36,28 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `registry [list]` | List published skills grouped by tier |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
+
+## `doctor`
+
+The newcomer's first command: a one-line-per-check readiness report. It names your Node
+version, the active judge provider (or the **offline heuristic — no API key needed**), how
+many skills are registered, and whether a registry/traces exist, then confirms you can run
+right now. Read-only; always exits 0.
+
+```bash
+npm run cli -- doctor
+# skillweave v1.1.0 — doctor
+#   ✓ Node.js         v20.11.0
+#   ✓ Judge provider  offline heuristic — no API key needed
+#   ✓ Skills          5 registered
+#   • Registry        none yet — try: skillweave publish <skill>
+#   • Artifacts       no runs yet — try: skillweave run
+# ✓ ready — you can run `skillweave run` now (offline by default).
+```
+
+The same report is available in-process as `runDoctor()` from the package entry. Mistyped a
+command or skill name? The CLI suggests the closest match — `skillweave verfy` →
+`did you mean 'verify'?`.
 
 ## `run`
 
@@ -262,7 +285,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (71 tests) |
+| `npm test` | `node:test` suite (79 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

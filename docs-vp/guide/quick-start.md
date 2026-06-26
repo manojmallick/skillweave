@@ -19,6 +19,16 @@ npm install
 Requires Node.js 20+. The runtime has three dependencies (the Anthropic, Google, and
 OpenAI SDKs), used only by the boundary judge.
 
+## Check you're ready
+
+```bash
+npm run cli -- doctor
+```
+
+`doctor` confirms your Node version and the active judge provider — with no API key set it
+reports the **offline heuristic**, so the chain runs end to end without any configuration.
+See the [CLI guide](/guide/cli#doctor).
+
 ## Run the chain
 
 ```bash

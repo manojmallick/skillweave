@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "stage": "public-launch",
+  "version": "1.1.0",
+  "stage": "developer-experience",
   "roadmap_target": "v2.0.0 — COMPOSE + OBSERVE (composition patterns + full observability platform)",
   "stats": {
     "base_skills": 3,
@@ -11,8 +11,8 @@
     "capabilities": 4,
     "registry_tiers": 3,
     "quality_gate_checks": 9,
-    "cli_commands": 16,
-    "tests": 71,
+    "cli_commands": 17,
+    "tests": 79,
     "npm_runtime_deps": 4
   },
   "providers": [
