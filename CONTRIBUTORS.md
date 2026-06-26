@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v1.2.0)
+
+- TRIGGER + EVENT primitives — declarative pipeline activation (manual/cron/webhook/pipeline_completion + condition + human approval), a 5-field cron matcher, and a typed `EventBus` with routed subscriptions wired into the orchestrator (#32)
+
 ## Recent Contributors (v1.1.0)
 
 - Developer experience — `skillweave doctor` readiness report and "did you mean?" suggestions for mistyped commands and skill names (#28)

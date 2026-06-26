@@ -139,6 +139,22 @@ Each `skill` must be registered (see `skillweave list`). Per-step
 `confidence_threshold` and `retries` override the skill's defaults **for that step
 only** — the registered skill is never mutated.
 
+A pipeline may also declare a [`trigger:` and `events:`](/guide/triggers-events) block —
+how it is activated, and which observability signals it routes:
+
+```yaml
+trigger:
+  type: manual              # manual | cron | webhook | pipeline_completion | ...
+events:
+  - on: skill_failed        # named occurrence the orchestrator emits
+    emit: failure           # info | warning | alert | failure
+    notify: [trace-log, webhook]
+    continue: false         # halt after this event
+```
+
+Both blocks are parsed and validated by `validate`. See the
+[Triggers & events](/guide/triggers-events) guide.
+
 ## `health`
 
 Computes a composite **0–100** health score and grade (SigMap scale: `A≥90 · B≥75 ·
@@ -285,7 +301,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (79 tests) |
+| `npm test` | `node:test` suite (97 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 
