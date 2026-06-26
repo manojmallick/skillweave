@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v1.0.0** — first stable release: a tiered skill registry with a 9-point quality gate, trust tiers, and local-first `skillweave publish` / `install` / `registry`.
+**Latest: v1.1.0** — developer experience: `skillweave doctor` (one-command readiness report) and "did you mean?" suggestions for mistyped commands and skills. (v1.0.0 shipped the tiered skill registry + 9-point quality gate.)
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (71 tests).
+Run the tests with `npm test` (79 tests).
 
 ## CLI
 
@@ -62,6 +62,7 @@ The `skillweave` CLI loads a pipeline from YAML, resolves its skills from a regi
 and runs it — plus health grading and SigMap adapter access:
 
 ```bash
+npm run cli -- doctor                    # readiness report — start here if you're new
 npm run cli -- run pipelines/document-grounding.pipeline.yaml [--doc <path>] [--inject <mode>]
 npm run cli -- validate pipelines/document-grounding.pipeline.yaml
 npm run cli -- test parse-input          # run a single skill in isolation
@@ -139,6 +140,7 @@ provider-profiles/         per-provider capability YAML
   schemas/                 versioned schema registry loader + differ + check
   security/                capability permissions · default-deny policy · guardWrite sandbox · redactSecrets
   catalog/                 tiered skill registry · 9-point quality gate · reputation · publish/install
+  dx/                      skillweave doctor (readiness report) · did-you-mean suggestions
   sigmap-verify.ts         runSigMapVerify() → VerifyResult — SigMap's in-process verify entry
   index.ts                 public API barrel (runSigMapVerify · runPipeline · registry · security · adapters)
 schemas/registry/          <name>@<version>.json schema store

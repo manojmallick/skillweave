@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v1.1.0)
+
+- Developer experience — `skillweave doctor` readiness report and "did you mean?" suggestions for mistyped commands and skill names (#28)
+
 ## Recent Contributors (v1.0.0)
 
 - Registry + public launch — the tiered skill catalog, the 9-point quality gate, quality-derived reputation, the local-first `publish` / `install` / `registry` commands, and the stable `src/index.ts` API (#24)

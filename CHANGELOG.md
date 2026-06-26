@@ -6,6 +6,17 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-06-26
+
+### Added
+- Developer experience (#28) — first-run onboarding so a newcomer never has to feel the runtime's depth.
+- `skillweave doctor` — a one-command readiness report: Node version, the active judge provider (or "offline heuristic — no API key needed"), registered skill count, and registry/artifacts presence, ending with whether you can run now.
+- `runDoctor()` returns the report as a structured `DoctorReport` (re-exported from `src/index.ts`).
+- "Did you mean?" suggestions — an unknown command suggests the closest command, and an unknown skill name (in `test` / `publish` / `install`) suggests the closest registered skill; `closest` / `levenshtein` exported for reuse.
+
+### Changed
+- CLI usage now leads with `skillweave doctor` and a "New here?" hint.
+
 ## [1.0.0] — 2026-06-24
 
 First stable release — the public-launch surface. The `src/index.ts` API is now the supported integration point.
