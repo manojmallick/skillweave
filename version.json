@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "stage": "developer-experience",
+  "version": "1.2.0",
+  "stage": "trigger-event",
   "roadmap_target": "v2.0.0 — COMPOSE + OBSERVE (composition patterns + full observability platform)",
   "stats": {
     "base_skills": 3,
@@ -11,8 +11,10 @@
     "capabilities": 4,
     "registry_tiers": 3,
     "quality_gate_checks": 9,
+    "trigger_types": 7,
+    "event_types": 4,
     "cli_commands": 17,
-    "tests": 79,
+    "tests": 97,
     "npm_runtime_deps": 4
   },
   "providers": [

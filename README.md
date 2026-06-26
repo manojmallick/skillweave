@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v1.1.0** — developer experience: `skillweave doctor` (one-command readiness report) and "did you mean?" suggestions for mistyped commands and skills. (v1.0.0 shipped the tiered skill registry + 9-point quality gate.)
+**Latest: v1.2.0** — TRIGGER + EVENT primitives: declarative pipeline activation (manual / cron / webhook / pipeline_completion) and a typed, routed `EventBus` — both local-first. (v1.1.0 added `skillweave doctor`; v1.0.0 the tiered registry + quality gate.)
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (79 tests).
+Run the tests with `npm test` (97 tests).
 
 ## CLI
 
@@ -141,6 +141,8 @@ provider-profiles/         per-provider capability YAML
   security/                capability permissions · default-deny policy · guardWrite sandbox · redactSecrets
   catalog/                 tiered skill registry · 9-point quality gate · reputation · publish/install
   dx/                      skillweave doctor (readiness report) · did-you-mean suggestions
+  events/                  EVENT primitive — typed EventBus · routed subscriptions
+  triggers/                TRIGGER primitive — TriggerSpec · cron matcher · shouldActivate
   sigmap-verify.ts         runSigMapVerify() → VerifyResult — SigMap's in-process verify entry
   index.ts                 public API barrel (runSigMapVerify · runPipeline · registry · security · adapters)
 schemas/registry/          <name>@<version>.json schema store

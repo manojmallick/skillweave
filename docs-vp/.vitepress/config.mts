@@ -48,6 +48,7 @@ export default defineConfig({
           { text: "Schema governance", link: "/guide/schemas" },
           { text: "Security model", link: "/guide/security" },
           { text: "Skill registry", link: "/guide/registry" },
+          { text: "Triggers & events", link: "/guide/triggers-events" },
           { text: "CLI", link: "/guide/cli" },
         ],
       },
