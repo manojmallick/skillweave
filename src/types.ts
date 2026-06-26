@@ -3,6 +3,8 @@
 
 import type { ExecutorSpec } from "./providers/types.js";
 import type { Capability } from "./security/types.js";
+import type { EventSubscription } from "./events/types.js";
+import type { TriggerSpec } from "./triggers/types.js";
 
 export type ExecutionClass = "deterministic" | "probabilistic" | "tool";
 
@@ -146,4 +148,8 @@ export interface Pipeline {
   steps: Skill[];
   /** Optional provider executor (primary + fallback) for this pipeline. */
   executor?: ExecutorSpec;
+  /** Optional activation trigger (manual when absent). */
+  trigger?: TriggerSpec;
+  /** Optional event subscriptions for observability signals. */
+  events?: EventSubscription[];
 }

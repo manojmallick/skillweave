@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 79 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 17 CLI commands · 4 runtime deps
+**Stats:** 97 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 17 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -118,6 +118,19 @@ the closest match when a command or skill name is mistyped (`verfy` → `verify`
 
 **Tags:** skillweave doctor · runDoctor · did-you-mean · closest/levenshtein
 **Impact:** 79-test `node:test` suite; a newcomer confirms "ready to run, offline" in one command, and typos guide instead of dead-end.
+
+### v1.2.0 — TRIGGER + EVENT primitives ✓
+
+The two activation/observability primitives, [local-first](/guide/triggers-events).
+**TRIGGER** declares how a pipeline activates (`manual` / `cron` / `webhook` /
+`pipeline_completion` + `condition` + `human_checkpoint`), with a pure 5-field `cronMatches`
+and a `shouldActivate` resolver. **EVENT** is a typed signal model — an `EventBus` with
+declarative `{ on, emit, notify, continue }` subscriptions that fan out across
+`trace-log` / `webhook` / `human` routes; the orchestrator emits `low_confidence_detected` /
+`skill_failed` / `pipeline_succeeded`. The loader parses + validates both pipeline blocks.
+
+**Tags:** TriggerSpec · cronMatches · shouldActivate · EventBus · trace-log/webhook/human routes · continue=halt
+**Impact:** 97-test `node:test` suite; pipelines declare activation and route typed signals — without any network or shell (delivery is the host's job).
 
 ## Planned
 

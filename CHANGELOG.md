@@ -6,6 +6,18 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-06-27
+
+### Added
+- TRIGGER + EVENT primitives (#32) — declarative pipeline activation and a typed, routed observability signal model. Local-first: triggers resolve and events route in-process; real webhook/human delivery is the host's responsibility.
+- EVENT — typed signals (`info` / `warning` / `alert` / `failure`) and an `EventBus`. Subscriptions are declarative (`{ on, emit, notify, continue }`); `emit(name)` fans out to every subscription matching `on`, routes a `SkillEvent` to each `notify` target (`trace-log` / `webhook` / `human`, via injectable handlers that default to in-memory sinks), and returns `{ routed, stop }` — `stop` is true when a matched subscription declares `continue: false`.
+- TRIGGER — `TriggerSpec` (`manual` / `cron` / `webhook` / `pipeline_completion` / `file_watch` / `git_hook` / `git_diff`, plus `condition` and `human_checkpoint`), a pure 5-field `cronMatches` (`*`, lists, ranges, steps), and `shouldActivate(spec, ctx)` resolving activation gated by `condition` and a human-approval checkpoint.
+- Pipeline `trigger:` and `events:` blocks — parsed and validated by the loader; `Pipeline` gains `trigger` / `events`. The `document-grounding` pipeline now declares both.
+- `src/index.ts` re-exports the surface (`EventBus`, `cronMatches`, `shouldActivate`, and the TRIGGER/EVENT types).
+
+### Changed
+- The orchestrator emits named events (`low_confidence_detected` / `skill_failed` / `pipeline_succeeded`) to an optional `EventBus` — additive, with zero overhead when none is supplied.
+
 ## [1.1.0] — 2026-06-26
 
 ### Added

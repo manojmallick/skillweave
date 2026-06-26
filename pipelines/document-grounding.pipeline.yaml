@@ -18,6 +18,25 @@ executor:
 checkpoint: after_each_skill
 on_failure: halt_and_expose
 
+# Activation (v1.2.0 TRIGGER) — manual by default.
+trigger:
+  type: manual
+
+# Observability signals (v1.2.0 EVENT) — routed when an EventBus is supplied.
+events:
+  - on: low_confidence_detected
+    emit: warning
+    notify: [trace-log]
+    continue: true
+  - on: skill_failed
+    emit: failure
+    notify: [trace-log, webhook]
+    continue: false
+  - on: pipeline_succeeded
+    emit: info
+    notify: [trace-log]
+    continue: true
+
 # Reliability layer (v0.2.0) — applied to probabilistic skills only.
 reliability:
   confidence_routing:
