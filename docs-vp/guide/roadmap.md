@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 71 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 16 CLI commands · 4 runtime deps
+**Stats:** 79 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 17 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -108,6 +108,16 @@ is now the supported integration surface.
 
 **Tags:** skill catalog · 9-point quality gate · trust tiers · reputation · publish/install/registry · stable public API
 **Impact:** 71-test `node:test` suite; skills can be graded, tiered, published, and installed locally. (Runtime reputation is seeded from the quality score; trace-history reputation is a follow-up.)
+
+### v1.1.0 — Developer experience ✓
+
+First-run onboarding so a Level 1 user never has to feel the runtime's depth.
+`skillweave doctor` gives a one-command readiness report (Node · active judge provider or
+the offline heuristic · registered skills · registry/artifacts), and the CLI now suggests
+the closest match when a command or skill name is mistyped (`verfy` → `verify`).
+
+**Tags:** skillweave doctor · runDoctor · did-you-mean · closest/levenshtein
+**Impact:** 79-test `node:test` suite; a newcomer confirms "ready to run, offline" in one command, and typos guide instead of dead-end.
 
 ## Planned
 
