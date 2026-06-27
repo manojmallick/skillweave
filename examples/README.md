@@ -13,6 +13,7 @@ npx tsx examples/triggers-and-events.ts
 npx tsx examples/memory.ts
 npx tsx examples/observe.ts
 npx tsx examples/custom-skill.ts
+npx tsx examples/todo-flagger.ts
 npx tsx examples/security.ts
 ```
 
@@ -29,6 +30,7 @@ npx tsx examples/security.ts
 | [memory.ts](memory.ts) | MEMORY | `MemoryStore` record/recall/stats across sessions · decay · conflict log · `failurePatterns` · `recommend` |
 | [observe.ts](observe.ts) | OBSERVE | `checkAlerts` threshold rules · `visualise` (ASCII + Mermaid) · `abTest` |
 | [custom-skill.ts](custom-skill.ts) | Skill authoring + registry | Define a skill · `gradeSkill` (quality gate → tier) · run it · `publishSkill` / `installSkill` |
+| [todo-flagger.ts](todo-flagger.ts) | Skill authoring (new STATE field) | A registered `todo-flagger` skill — flags TODO/FIXME/XXX blocks; grades 9/9 verified |
 | [security.ts](security.ts) | SECURITY | `capabilities` · `checkSkillPermissions` (default-deny) · `guardWrite` sandbox · `redactSecrets` |
 
 Artifacts (traces, the memory log, a demo registry) land in gitignored dirs and are safe to
