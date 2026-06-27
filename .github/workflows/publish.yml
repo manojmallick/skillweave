@@ -1,0 +1,43 @@
+name: Publish to npm
+
+# Publishes the package to npm. Runs automatically when a vX.Y.Z tag is pushed
+# (so a /ship tag publishes), and can be triggered manually for an existing tag.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Tag or ref to publish (e.g. v2.0.2). Defaults to the current ref."
+        required: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      # Skip if this exact version is already on npm (keeps the job idempotent).
+      - name: Publish
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "skillweave@${VERSION}" version >/dev/null 2>&1; then
+            echo "skillweave@${VERSION} already published — skipping."
+          else
+            npm publish --access public --provenance
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
