@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 123 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
+**Stats:** 126 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -165,7 +165,17 @@ Bundled data (schemas, provider profiles) resolves relative to the install, so a
 works from any directory.
 
 **Tags:** dist build · main/exports/types/files · package-relative data · dist-first bin
-**Impact:** 123-test `node:test` suite; `import { runPipeline, EventBus, MemoryStore, … } from "skillweave"` once published.
+**Impact:** 123-test `node:test` suite; `import { runPipeline, EventBus, MemoryStore, … } from "skillweave"` once built.
+
+### v2.0.1.x → v2.0.2 — published to npm ✓
+
+The package is **live on npm** (`npm i skillweave`), published by a tag-gated workflow with
+provenance. This patch also hardened the CLI: `run --doc` / `test --input` / `verify --input`
+fail gracefully on a missing or malformed file (clean error + exit 2) instead of an uncaught
+stack trace — found by running every feature end-to-end before publishing.
+
+**Tags:** npm publish workflow · provenance · graceful CLI file errors · readArgFile
+**Impact:** 126-test `node:test` suite; `npm i skillweave` works.
 
 ## Planned
 

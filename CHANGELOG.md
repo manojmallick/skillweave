@@ -6,6 +6,17 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.2] — 2026-06-27
+
+First release **published to npm** (`npm i skillweave`).
+
+### Fixed
+- CLI: `run --doc`, `test --input`, and `verify --input` now fail gracefully on a missing or malformed file — a clean error and exit code 2 instead of an uncaught Node stack trace (#49). Verified by running every feature end-to-end.
+
+### Added
+- Tag-gated npm publish workflow (`.github/workflows/publish.yml`) — publishes on a `vX.Y.Z` tag push (or manual dispatch), idempotent, with npm provenance.
+- README license line.
+
 ## [2.0.1] — 2026-06-27
 
 ### Changed

@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v2.0.0** — COMPOSE + OBSERVE: all composition patterns (sequential / parallel / map / reduce / conditional / loop + DAG) and a local-first observability layer (alerts, `skillweave visualise`, A/B). The v0.1 → v2.0 roadmap is complete. (Also ships the v1.3.0 MEMORY primitive.)
+**Latest: v2.0.2** — published to npm (`npm i skillweave`); the v0.1 → v2.0 roadmap is complete (COMPOSE + OBSERVE: all composition patterns + a local-first observability layer). This patch also makes the CLI fail gracefully on a bad `--doc`/`--input` file.
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (123 tests).
+Run the tests with `npm test` (126 tests).
 
 ## CLI
 
@@ -88,9 +88,13 @@ that step only. See the [CLI guide](docs-vp/guide/cli.md) and the
 
 ## Use as a library
 
-The package builds to `dist/` and exposes a stable, importable API from `src/index.ts` — the
-runtime, every primitive (COMPOSE · OBSERVE · MEMORY · TRIGGER · EVENT · SECURITY), the
-registry, and the SigMap adapters. Once published to npm:
+Install it and import the stable API — the runtime, every primitive
+(COMPOSE · OBSERVE · MEMORY · TRIGGER · EVENT · SECURITY), the registry, and the SigMap
+adapters:
+
+```bash
+npm install skillweave
+```
 
 ```ts
 import { runSigMapVerify, runPipeline, EventBus, MemoryStore, sequential } from "skillweave";
@@ -98,7 +102,8 @@ import { runSigMapVerify, runPipeline, EventBus, MemoryStore, sequential } from 
 const result = await runSigMapVerify({ input: "# Notes\n..." });
 ```
 
-Build the compiled output locally with `npm run build` (emits `dist/index.js` + `.d.ts`).
+The `skillweave` CLI is also installed as a bin. Build the compiled output from source with
+`npm run build` (emits `dist/index.js` + `.d.ts`).
 
 ## The boundary judge (multi-LLM)
 
@@ -186,3 +191,7 @@ test/                      node:test suite (npm test)
 
 Artifacts land in `traces/` (NDJSON + per-skill checkpoints) and
 `.context/skillweave-memory.ndjson` (the learning log). Both are gitignored.
+
+## License
+
+MIT © 2026 Manoj Mallick · Made in Amsterdam

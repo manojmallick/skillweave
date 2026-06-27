@@ -38,3 +38,19 @@ test("list and help return 0; unknown command returns 2", async () => {
   assert.equal(await cli([]), 0);
   assert.equal(await cli(["bogus"]), 2);
 });
+
+// A missing / malformed --doc / --input must fail gracefully (exit 2), never throw.
+const MISSING = "test/fixtures/does-not-exist.md";
+
+test("run --doc with a missing file exits 2 (no crash)", async () => {
+  assert.equal(await cli(["run", GOOD, "--doc", MISSING]), 2);
+});
+
+test("verify --input with a missing file exits 2 (no crash)", async () => {
+  assert.equal(await cli(["verify", "--input", MISSING]), 2);
+});
+
+test("test --input with a missing file or invalid JSON exits 2 (no crash)", async () => {
+  assert.equal(await cli(["test", "parse-input", "--input", MISSING]), 2);
+  assert.equal(await cli(["test", "parse-input", "--input", "README.md"]), 2); // valid file, invalid JSON
+});
