@@ -1,6 +1,6 @@
 {
   "name": "skillweave",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "SkillWeave — a runtime (and emerging open standard) for composing LLM tasks from small, focused, testable micro-skills.",
   "license": "MIT",
   "author": "Manoj Mallick (https://github.com/manojmallick)",

@@ -6,6 +6,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.1] — 2026-06-27
+
+### Changed
+- Build: the package is now **npm-publishable** (#43). Added a compiled build (`tsconfig.build.json` → `dist/` with JS + `.d.ts` + sourcemaps; `npm run build`; `prepublishOnly`), dropped `private`, and set `main` / `module` / `types` / `exports` to the compiled `dist/index.js` + `dist/index.d.ts`, with a `files` whitelist (`dist`, `schemas`, `provider-profiles`, `pipelines`) and `engines.node >= 20`.
+- Schema-registry and provider-profile data now resolve relative to the package install location (`src/pkg-path.ts`), so a globally-installed CLI reads its own bundled data instead of the consumer's cwd; the `SKILLWEAVE_SCHEMA_DIR` / `SKILLWEAVE_PROFILES_DIR` overrides still take precedence.
+- The `skillweave` bin runs the compiled `dist/cli.js` when present and falls back to the tsx source loader in a dev checkout.
+
 ## [2.0.0] — 2026-06-27
 
 The roadmap capstone. This release also ships the **MEMORY primitive** from `[1.3.0]` below, which was prepared but never tagged — 2.0.0 carries it to a published release.

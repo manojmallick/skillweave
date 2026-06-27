@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 120 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
+**Stats:** 123 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -156,6 +156,16 @@ published tag.
 
 **Tags:** sequential/parallel/map/reduce/conditional/loop · dagLayers · checkAlerts · visualise · abTest · skillweave visualise
 **Impact:** 120-test `node:test` suite; the v0.1 → v2.0 roadmap is complete — every primitive (CONTEXT · COST · OBSERVE · TRIGGER · COMPOSE · MEMORY · EVENT · SECURITY) shipped, all local-first.
+
+### v2.0.1 — npm-publishable ✓
+
+Packaging release. The runtime now compiles to `dist/` (JS + `.d.ts`), drops `private`, and
+exposes a stable `main` / `exports` so it can be installed from npm and imported as a library.
+Bundled data (schemas, provider profiles) resolves relative to the install, so a global CLI
+works from any directory.
+
+**Tags:** dist build · main/exports/types/files · package-relative data · dist-first bin
+**Impact:** 123-test `node:test` suite; `import { runPipeline, EventBus, MemoryStore, … } from "skillweave"` once published.
 
 ## Planned
 

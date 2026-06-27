@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (120 tests).
+Run the tests with `npm test` (123 tests).
 
 ## CLI
 
@@ -85,6 +85,20 @@ npm run cli -- visualise pipelines/document-grounding.pipeline.yaml  # ASCII/Mer
 Per-step `confidence_threshold` / `retries` in the YAML override a skill's defaults for
 that step only. See the [CLI guide](docs-vp/guide/cli.md) and the
 [SigMap adapters](docs-vp/guide/adapters.md) reference.
+
+## Use as a library
+
+The package builds to `dist/` and exposes a stable, importable API from `src/index.ts` — the
+runtime, every primitive (COMPOSE · OBSERVE · MEMORY · TRIGGER · EVENT · SECURITY), the
+registry, and the SigMap adapters. Once published to npm:
+
+```ts
+import { runSigMapVerify, runPipeline, EventBus, MemoryStore, sequential } from "skillweave";
+
+const result = await runSigMapVerify({ input: "# Notes\n..." });
+```
+
+Build the compiled output locally with `npm run build` (emits `dist/index.js` + `.d.ts`).
 
 ## The boundary judge (multi-LLM)
 
