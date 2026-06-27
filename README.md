@@ -9,7 +9,7 @@
 [![Tests](https://github.com/manojmallick/skillweave/actions/workflows/test.yml/badge.svg)](https://github.com/manojmallick/skillweave/actions/workflows/test.yml)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-339933)](https://nodejs.org)
 
-📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
+📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 🧪 [Examples](examples/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
 **Latest: v2.0.2** — published to npm (`npm i skillweave`); the v0.1 → v2.0 roadmap is complete (COMPOSE + OBSERVE: all composition patterns + a local-first observability layer). This patch also makes the CLI fail gracefully on a bad `--doc`/`--input` file.
 
