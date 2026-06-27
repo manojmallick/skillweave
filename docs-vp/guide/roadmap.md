@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 126 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
+**Stats:** 130 tests passing · 3 frozen base skills · 6 domain skills · 3 SigMap adapters · 4 provider adapters · 7 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -176,6 +176,17 @@ stack trace — found by running every feature end-to-end before publishing.
 
 **Tags:** npm publish workflow · provenance · graceful CLI file errors · readArgFile
 **Impact:** 126-test `node:test` suite; `npm i skillweave` works.
+
+### v2.1.0 — todo-flagger skill + examples ✓
+
+A sixth domain skill, `todo-flagger`, that flags content blocks containing a
+`TODO` / `FIXME` / `XXX` marker — a complete worked example of
+[authoring a skill](/guide/skill-contract): it extends `State` with a new `flags` field, adds
+a `todo-flag@1.0` registry schema, and grades **9/9 → verified**. Plus eight runnable, offline
+[examples](/guide/examples) (one per feature area) surfaced from the docs and README.
+
+**Tags:** todo-flagger · new STATE field · todo-flag@1.0 schema · examples/ · Examples guide
+**Impact:** 130-test `node:test` suite; 6 domain skills · 7 registry schemas; a copy-paste template for new skills.
 
 ## Planned
 

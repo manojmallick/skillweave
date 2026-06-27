@@ -101,3 +101,11 @@ export const extractHighlights: Skill = {
    model-specific syntax.
 5. **Classify honestly** — mark a skill `probabilistic` only if it makes
    non-deterministic decisions; deterministic skills must stay overhead-free.
+
+## Worked example
+
+[`todo-flagger`](https://github.com/manojmallick/skillweave/blob/main/src/skills/todo-flagger.ts)
+is a complete, registered skill you can copy: it flags content blocks containing a
+`TODO` / `FIXME` / `XXX` marker, extends `State` with a new `flags` field, pins a
+`todo-flag@1.0` schema, and grades **9/9 → verified**. Run it with
+`npx tsx examples/todo-flagger.ts`, and see the [Examples](/guide/examples) guide for more.

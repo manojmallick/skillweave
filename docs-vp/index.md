@@ -80,7 +80,7 @@ parse-input  →  validate-coverage  →  extract-highlights  →  memory-update
 npm install
 npm start                            # run the built-in chain (offline heuristic judge)
 npm start -- --inject hallucination  # ungrounded → judge RETRIES → recovers
-npm test                             # node:test suite (126 tests)
+npm test                             # node:test suite (130 tests)
 ```
 
 Or drive it from the `skillweave` CLI:

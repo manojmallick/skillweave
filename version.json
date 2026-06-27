@@ -1,13 +1,13 @@
 {
-  "version": "2.0.2",
+  "version": "2.1.0",
   "stage": "published",
   "roadmap_target": "roadmap complete — v0.1 prototype → v2.0 COMPOSE + OBSERVE all shipped; published to npm",
   "stats": {
     "base_skills": 3,
-    "domain_skills": 5,
+    "domain_skills": 6,
     "sigmap_adapters": 3,
     "provider_adapters": 4,
-    "registry_schemas": 6,
+    "registry_schemas": 7,
     "capabilities": 4,
     "registry_tiers": 3,
     "quality_gate_checks": 9,
@@ -15,7 +15,7 @@
     "event_types": 4,
     "compose_patterns": 6,
     "cli_commands": 19,
-    "tests": 126,
+    "tests": 130,
     "npm_runtime_deps": 4
   },
   "providers": [
