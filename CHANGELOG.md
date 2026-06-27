@@ -6,6 +6,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.0] — 2026-06-27
+
+### Added
+- `todo-flagger` skill (#56) — a deterministic, registered skill that flags content blocks containing a `TODO` / `FIXME` / `XXX` marker; grades 9/9 → verified. A complete worked example of authoring a skill, including extending `State` with a new field (`flags` / the `TodoFlag` type) and adding a `todo-flag@1.0` registry schema.
+- Eight runnable, offline example scripts under [`examples/`](https://github.com/manojmallick/skillweave/tree/main/examples) (#52) — one per feature area (run-chain · verify · compose · triggers-and-events · memory · observe · custom-skill · security), plus `todo-flagger`.
+- An Examples guide page (#54) surfaced in the docs sidebar + top nav and the README.
+
 ## [2.0.2] — 2026-06-27
 
 First release **published to npm** (`npm i skillweave`).

@@ -79,5 +79,5 @@ it into CI to catch silent breaks before they ship.
 ```bash
 npm run cli -- check-schemas
 #   content-block 1.0→1.1: +lang
-# ✓ 6 schemas valid · 5 pins resolve · additive-only holds
+# ✓ 7 schemas valid · 6 pins resolve · additive-only holds
 ```

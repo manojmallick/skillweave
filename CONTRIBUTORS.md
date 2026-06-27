@@ -3,6 +3,11 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v2.1.0)
+
+- `todo-flagger` skill — a worked example of authoring a skill (new STATE field + registry schema, 9/9 verified) (#56)
+- Runnable feature examples under `examples/` + an Examples docs page (#52, #54)
+
 ## Recent Contributors (v2.0.2)
 
 - Published to npm — tag-gated publish workflow, graceful CLI errors on a bad `--doc`/`--input` file, and a README license (#49)
