@@ -1,6 +1,6 @@
 ---
 title: Observe
-description: SkillWeave's OBSERVE primitive (v2.0.0) — local-first observability: threshold alerting rules, a pipeline visualiser, and A/B skill testing.
+description: "SkillWeave's OBSERVE primitive (v2.0.0) — local-first observability: threshold alerting rules, a pipeline visualiser, and A/B skill testing."
 ---
 
 # Observe
