@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 97 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 17 CLI commands · 4 runtime deps
+**Stats:** 108 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 18 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -131,6 +131,18 @@ declarative `{ on, emit, notify, continue }` subscriptions that fan out across
 
 **Tags:** TriggerSpec · cronMatches · shouldActivate · EventBus · trace-log/webhook/human routes · continue=halt
 **Impact:** 97-test `node:test` suite; pipelines declare activation and route typed signals — without any network or shell (delivery is the host's job).
+
+### v1.3.0 — MEMORY primitive ✓
+
+Pipelines [learn from past executions](/guide/memory). A local-first `MemoryStore` on
+`.context/` records outcomes and failures and reads them back across sessions, with a **decay
+model** (stale records stop informing adaptation), **last-write-wins** keyed records plus a
+conflict log, and **failure-pattern learning** (`failurePatterns` / `recommend`). Skills
+declare `memory_reads` / `memory_writes` (scoped writes, default-deny), and
+`skillweave memory` surfaces the trend + recommendations.
+
+**Tags:** MemoryStore · decay/isStale · conflict log · failurePatterns · recommend · per-skill scope · skillweave memory
+**Impact:** 108-test `node:test` suite; the run log becomes adaptive knowledge — failure patterns and recommendations from real history, all local and offline.
 
 ## Planned
 

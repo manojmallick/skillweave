@@ -34,6 +34,7 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `publish <skill>` | Grade a skill and publish it to the registry |
 | `install <skill>` | Look up a published skill in the registry |
 | `registry [list]` | List published skills grouped by tier |
+| `memory [pipeline]` | Report the learning trend + failure patterns from past runs |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -137,7 +138,9 @@ pipeline:
 
 Each `skill` must be registered (see `skillweave list`). Per-step
 `confidence_threshold` and `retries` override the skill's defaults **for that step
-only** — the registered skill is never mutated.
+only** — the registered skill is never mutated. A step may also declare a
+[`memory:`](/guide/memory) block (`reads` / `writes`) to scope what a skill may read from and
+write to the [MEMORY](/guide/memory) store.
 
 A pipeline may also declare a [`trigger:` and `events:`](/guide/triggers-events) block —
 how it is activated, and which observability signals it routes:
@@ -286,6 +289,25 @@ npm run cli -- install extract-highlights
 `1` when the skill is not in the registry. The same surface is available in-process via
 `gradeSkill` / `publishSkill` / `installSkill` / `listRegistry` from the package entry.
 
+## `memory`
+
+Reports what the [MEMORY primitive](/guide/memory) has learned from past runs — the score
+trend, pass rate, and any recurring failure patterns with recommendations, per pipeline (or a
+single one when named). Read-only; exits 0.
+
+```bash
+npm run cli -- memory
+# document-grounding
+#   runs        : 10
+#   avg score   : 1
+#   pass rate   : 100%
+#   failures    : 0
+#   • healthy — no recurring failure patterns detected
+```
+
+The same data is available in-process via `MemoryStore` (`record` / `recall` / `stats`) and
+`failurePatterns` / `recommend` from the package entry.
+
 ## Provider selection
 
 The boundary judge picks a provider from environment variables — see the
@@ -301,7 +323,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (97 tests) |
+| `npm test` | `node:test` suite (108 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

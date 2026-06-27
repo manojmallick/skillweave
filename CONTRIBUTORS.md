@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v1.3.0)
+
+- MEMORY primitive — an adaptive `MemoryStore` on `.context/` with a decay model, last-write-wins conflict log, cross-session failure-pattern learning, per-skill read/write scope, and the `skillweave memory` command (#36)
+
 ## Recent Contributors (v1.2.0)
 
 - TRIGGER + EVENT primitives — declarative pipeline activation (manual/cron/webhook/pipeline_completion + condition + human approval), a 5-field cron matcher, and a typed `EventBus` with routed subscriptions wired into the orchestrator (#32)
