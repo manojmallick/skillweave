@@ -1,6 +1,6 @@
 {
   "name": "skillweave",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "description": "SkillWeave — a runtime (and emerging open standard) for composing LLM tasks from small, focused, testable micro-skills.",
   "license": "MIT",

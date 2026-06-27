@@ -6,6 +6,18 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-06-27
+
+### Added
+- MEMORY primitive (#36) under `src/memory/` — persistent, adaptive knowledge on `.context/` so pipelines learn from past executions. Local-first, no network.
+- `MemoryStore` over `.context/skillweave-memory.ndjson` — `record` / `all` / `recall` / `stats` / `conflicts`, back-compatible with the records the `memory-update` skill already writes (records without a `kind` are read as outcomes).
+- Decay model — `isStale(ts, now, maxAgeMs)`; `recall` / `stats` exclude records older than the staleness threshold (default 30 days) unless asked.
+- Concurrent-write safety — keyed records are last-write-wins in the derived view; a colliding keyed write is appended to a `.conflicts.ndjson` audit log.
+- Cross-session learning — `failurePatterns(records)` groups failures by skill + reason; `recommend(stats)` turns aggregate stats into plain-language suggestions.
+- Per-skill memory scope — `Skill` gains `memory_reads` / `memory_writes`; the loader parses a step-level `memory: { reads, writes }`; `MemoryStore.scopedTo(skill)` refuses a write outside the declared keys.
+- CLI: `skillweave memory [pipeline]` — reports the score trend, pass rate, failure count, failure patterns, and recommendations.
+- `src/index.ts` re-exports the MEMORY surface (`MemoryStore`, `failurePatterns`, `recommend`, `isStale`, and the types).
+
 ## [1.2.0] — 2026-06-27
 
 ### Added

@@ -49,6 +49,7 @@ export default defineConfig({
           { text: "Security model", link: "/guide/security" },
           { text: "Skill registry", link: "/guide/registry" },
           { text: "Triggers & events", link: "/guide/triggers-events" },
+          { text: "Memory", link: "/guide/memory" },
           { text: "CLI", link: "/guide/cli" },
         ],
       },
