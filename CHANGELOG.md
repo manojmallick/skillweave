@@ -6,6 +6,23 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-06-27
+
+The roadmap capstone. This release also ships the **MEMORY primitive** from `[1.3.0]` below, which was prepared but never tagged — 2.0.0 carries it to a published release.
+
+### Added
+- COMPOSE primitive (#39) under `src/compose/` — all composition patterns as pure async combinators: `sequential` · `parallel` · `mapPattern` · `reducePattern` · `conditional(when, then, else?)` · `loop(body, until, maxIterations)`.
+- `dagLayers(nodes)` — DAG resolution: orders `depends_on` into parallelizable layers; throws on a cycle or an unknown dependency.
+- OBSERVE primitive (#39) under `src/observe/` — a local-first observability layer:
+  - `checkAlerts(metrics, rules)` — threshold alerting rules (`>` `>=` `<` `<=` `==` `!=`) → fired alerts with value + severity, routable through the `EventBus`.
+  - `visualise(pipeline, { format })` — an ASCII or Mermaid diagram of a pipeline (trigger → steps + events).
+  - `abTest(scoreA, scoreB)` — compare two skill-version judge scores → `{ winner, delta }`.
+- CLI: `skillweave visualise <pipeline.yaml> [--mermaid]`.
+- `src/index.ts` re-exports the COMPOSE + OBSERVE surface.
+
+### Notes
+- Deferred (documented): the hosted observability dashboard and live alert/webhook delivery (network — a host responsibility; alerts route through the `EventBus`), orchestrator-level DAG auto-execution, and published performance benchmarks.
+
 ## [1.3.0] — 2026-06-27
 
 ### Added

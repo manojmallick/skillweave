@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 108 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 18 CLI commands · 4 runtime deps
+**Stats:** 120 tests passing · 3 frozen base skills · 5 domain skills · 3 SigMap adapters · 4 provider adapters · 6 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -144,13 +144,27 @@ declare `memory_reads` / `memory_writes` (scoped writes, default-deny), and
 **Tags:** MemoryStore · decay/isStale · conflict log · failurePatterns · recommend · per-skill scope · skillweave memory
 **Impact:** 108-test `node:test` suite; the run log becomes adaptive knowledge — failure patterns and recommendations from real history, all local and offline.
 
+### v2.0.0 — COMPOSE + OBSERVE ✓
+
+The capstone. **COMPOSE** completes [all composition patterns](/guide/compose) as pure async
+combinators — `sequential` / `parallel` / `mapPattern` / `reducePattern` / `conditional` /
+`loop` — plus `dagLayers` for DAG resolution into parallelizable layers. **OBSERVE** adds the
+local-first [observability layer](/guide/observe): `checkAlerts` threshold rules (routable via
+the `EventBus`), `visualise` (ASCII/Mermaid pipeline diagrams + `skillweave visualise`), and
+`abTest` skill-version comparison. This release also carries the v1.3.0 MEMORY primitive to a
+published tag.
+
+**Tags:** sequential/parallel/map/reduce/conditional/loop · dagLayers · checkAlerts · visualise · abTest · skillweave visualise
+**Impact:** 120-test `node:test` suite; the v0.1 → v2.0 roadmap is complete — every primitive (CONTEXT · COST · OBSERVE · TRIGGER · COMPOSE · MEMORY · EVENT · SECURITY) shipped, all local-first.
+
 ## Planned
 
-### v2.0.0 — COMPOSE + OBSERVE
-
-All composition patterns (reduce / conditional / loop / DAG) and the full observability
-platform (alerts, replay, A/B skill testing).
+The published roadmap (v0.1 prototype → v2.0 COMPOSE + OBSERVE) is **complete**. Deferred,
+host-facing extensions remain: a hosted observability dashboard and live alert/webhook
+delivery (network), orchestrator-level DAG auto-execution, and published performance
+benchmarks.
 
 ---
 
-**Current milestone:** v2.0.0 — COMPOSE + OBSERVE (composition patterns — reduce / conditional / loop / DAG — and the full observability platform: alerts, replay, A/B skill testing).
+**Current milestone:** roadmap complete — v2.0.0 shipped. Next work is host-facing
+(dashboard, live delivery) and an optional public npm publish.
