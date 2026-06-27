@@ -120,6 +120,13 @@ export function validatePipelineDoc(doc: unknown): ValidationIssue[] {
     ) {
       error(`${where} (${step.skill}): retries must be a non-negative integer`);
     }
+    if (step.memory != null) {
+      const m = step.memory as Record<string, unknown>;
+      const okList = (v: unknown) => v == null || (Array.isArray(v) && v.every((s) => typeof s === "string"));
+      if (typeof m !== "object" || !okList(m.reads) || !okList(m.writes)) {
+        error(`${where} (${step.skill}): memory.reads / memory.writes must be lists of strings`);
+      }
+    }
   });
 
   return issues;
@@ -150,6 +157,11 @@ export function loadPipeline(path: string): Pipeline {
       overrides.confidence_threshold = step.confidence_threshold;
     }
     if (typeof step.retries === "number") overrides.retries = step.retries;
+    if (step.memory && typeof step.memory === "object") {
+      const m = step.memory as Record<string, unknown>;
+      if (Array.isArray(m.reads)) overrides.memory_reads = m.reads as string[];
+      if (Array.isArray(m.writes)) overrides.memory_writes = m.writes as string[];
+    }
     // Don't mutate the registered skill — clone only when overriding.
     return Object.keys(overrides).length ? { ...base, ...overrides } : base;
   });

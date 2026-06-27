@@ -26,6 +26,8 @@ import { runPipeline } from "./orchestrator.js";
 import { loadPipeline, PipelineError, validatePipelineFile } from "./pipeline-loader.js";
 import { getSkill, listSkills } from "./registry.js";
 import { closest, runDoctor } from "./dx/index.js";
+import { MemoryStore, recommend } from "./memory/index.js";
+import { visualise } from "./observe/index.js";
 import { runSigMapVerify } from "./sigmap-verify.js";
 import { SAMPLE_DOC, THIN_DOC } from "./sample-doc.js";
 import type { State } from "./types.js";
@@ -78,6 +80,8 @@ Usage:
   skillweave publish <skill>
   skillweave install <skill>
   skillweave registry [list]
+  skillweave memory [pipeline]
+  skillweave visualise <pipeline.yaml> [--mermaid]
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).
@@ -87,7 +91,7 @@ New here? Run \`skillweave doctor\`.`;
 const COMMANDS = [
   "doctor", "run", "validate", "test", "list", "trace", "new", "verify",
   "health", "sigmap", "providers", "neutral", "check-schemas", "check-permissions",
-  "publish", "install", "registry", "version", "help",
+  "publish", "install", "registry", "memory", "visualise", "version", "help",
 ];
 
 /** "did you mean?" hint for an unknown skill name (empty when nothing is close). */
@@ -496,6 +500,47 @@ function cmdRegistry(): number {
   return 0;
 }
 
+function cmdMemory(rest: string[]): number {
+  const { positionals } = parseArgs(rest);
+  const store = new MemoryStore();
+  const all = store.all({ includeStale: true });
+  if (!all.length) {
+    console.log("(no memory yet — run a pipeline first)");
+    return 0;
+  }
+  const pipelines = positionals[0]
+    ? [positionals[0]]
+    : [...new Set(all.map((r) => r.pipeline))].sort();
+  for (const p of pipelines) {
+    const s = store.stats(p);
+    console.log(`${p}`);
+    console.log(`  runs        : ${s.runs}`);
+    console.log(`  avg score   : ${s.avg_score ?? "n/a"}`);
+    console.log(`  pass rate   : ${s.pass_rate != null ? `${Math.round(s.pass_rate * 100)}%` : "n/a"}`);
+    console.log(`  failures    : ${s.failures}`);
+    for (const r of recommend(s)) console.log(`  • ${r}`);
+  }
+  return 0;
+}
+
+function cmdVisualise(rest: string[]): number {
+  const { positionals, flags } = parseArgs(rest);
+  const path = positionals[0];
+  if (!path) {
+    console.error("visualise: missing <pipeline.yaml>");
+    return 2;
+  }
+  let pipeline;
+  try {
+    pipeline = loadPipeline(path);
+  } catch (err) {
+    console.error(err instanceof PipelineError ? err.message : String(err));
+    return 1;
+  }
+  console.log(visualise(pipeline, { format: flags.mermaid ? "mermaid" : "ascii" }));
+  return 0;
+}
+
 function cmdDoctor(): number {
   const report = runDoctor();
   console.log(`skillweave v${VERSION} — doctor\n`);
@@ -548,6 +593,10 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdInstall(rest);
     case "registry":
       return cmdRegistry();
+    case "memory":
+      return cmdMemory(rest);
+    case "visualise":
+      return cmdVisualise(rest);
     case "version":
     case "--version":
     case "-v":

@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v1.2.0** — TRIGGER + EVENT primitives: declarative pipeline activation (manual / cron / webhook / pipeline_completion) and a typed, routed `EventBus` — both local-first. (v1.1.0 added `skillweave doctor`; v1.0.0 the tiered registry + quality gate.)
+**Latest: v2.0.0** — COMPOSE + OBSERVE: all composition patterns (sequential / parallel / map / reduce / conditional / loop + DAG) and a local-first observability layer (alerts, `skillweave visualise`, A/B). The v0.1 → v2.0 roadmap is complete. (Also ships the v1.3.0 MEMORY primitive.)
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (97 tests).
+Run the tests with `npm test` (120 tests).
 
 ## CLI
 
@@ -78,6 +78,8 @@ npm run cli -- check-permissions         # audit each skill's capabilities vs th
 npm run cli -- verify --input ./doc.md   # run the sigmap-verify pipeline → structured verdict
 npm run cli -- publish extract-highlights # grade + publish a skill to the tiered registry
 npm run cli -- registry                  # list published skills by tier
+npm run cli -- memory                    # what the pipeline learned from past runs
+npm run cli -- visualise pipelines/document-grounding.pipeline.yaml  # ASCII/Mermaid diagram
 ```
 
 Per-step `confidence_threshold` / `retries` in the YAML override a skill's defaults for
@@ -143,6 +145,9 @@ provider-profiles/         per-provider capability YAML
   dx/                      skillweave doctor (readiness report) · did-you-mean suggestions
   events/                  EVENT primitive — typed EventBus · routed subscriptions
   triggers/                TRIGGER primitive — TriggerSpec · cron matcher · shouldActivate
+  memory/                  MEMORY primitive — adaptive store · decay · conflict log · failure patterns
+  compose/                 COMPOSE primitive — sequential/parallel/map/reduce/conditional/loop · dagLayers
+  observe/                 OBSERVE primitive — checkAlerts · visualise (ASCII/Mermaid) · abTest
   sigmap-verify.ts         runSigMapVerify() → VerifyResult — SigMap's in-process verify entry
   index.ts                 public API barrel (runSigMapVerify · runPipeline · registry · security · adapters)
 schemas/registry/          <name>@<version>.json schema store
