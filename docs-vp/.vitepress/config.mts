@@ -19,6 +19,7 @@ export default defineConfig({
     siteTitle: "skillweave",
     nav: [
       { text: "Docs", link: "/guide/quick-start", activeMatch: "/guide/" },
+      { text: "Examples", link: "/guide/examples" },
       { text: "Roadmap", link: "/guide/roadmap" },
       { text: "GitHub", link: "https://github.com/manojmallick/skillweave" },
     ],
@@ -29,6 +30,7 @@ export default defineConfig({
         items: [
           { text: "Quick start", link: "/guide/quick-start" },
           { text: "Architecture", link: "/guide/architecture" },
+          { text: "Examples", link: "/guide/examples" },
         ],
       },
       {
