@@ -32,6 +32,13 @@ export interface Highlight {
   confidence: number; // 0.0 – 1.0
 }
 
+/** A content block flagged for containing a marker (output of todo-flagger). */
+export interface TodoFlag {
+  block_id: string;
+  marker: "TODO" | "FIXME" | "XXX";
+  text: string;
+}
+
 /** Groundedness verdict (output of boundary-judge). */
 export interface JudgeVerdict {
   score: number; // 0.0 – 1.0
@@ -59,6 +66,7 @@ export interface State {
   content_blocks?: ContentBlock[];
   coverage?: Coverage;
   highlights?: Highlight[];
+  flags?: TodoFlag[];
   judge?: JudgeVerdict;
   memory?: MemorySummary;
   _meta: {
