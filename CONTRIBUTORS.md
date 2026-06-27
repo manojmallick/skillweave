@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v2.2.0)
+
+- `summarize` skill — a probabilistic extractive summarizer that exercises the reliability layer (confidence routing · auto-judge · retry-with-negative-context), 9/9 verified (#60)
+
 ## Recent Contributors (v2.1.0)
 
 - `todo-flagger` skill — a worked example of authoring a skill (new STATE field + registry schema, 9/9 verified) (#56)
