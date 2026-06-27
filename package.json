@@ -1,7 +1,6 @@
 {
   "name": "skillweave",
-  "version": "2.0.0",
-  "private": true,
+  "version": "2.0.1",
   "description": "SkillWeave — a runtime (and emerging open standard) for composing LLM tasks from small, focused, testable micro-skills.",
   "license": "MIT",
   "author": "Manoj Mallick (https://github.com/manojmallick)",
@@ -24,6 +23,25 @@
     "sigmap"
   ],
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "provider-profiles",
+    "pipelines"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "bin": {
     "skillweave": "bin/skillweave.mjs"
   },
@@ -31,6 +49,8 @@
     "start": "tsx src/run.ts",
     "chain": "tsx src/run.ts",
     "cli": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test test/*.test.ts",
     "bench": "node --import tsx scripts/run-reliability-benchmark.ts",

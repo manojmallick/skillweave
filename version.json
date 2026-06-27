@@ -1,7 +1,7 @@
 {
-  "version": "2.0.0",
-  "stage": "compose-observe",
-  "roadmap_target": "roadmap complete — v0.1 prototype → v2.0 COMPOSE + OBSERVE all shipped",
+  "version": "2.0.1",
+  "stage": "npm-publishable",
+  "roadmap_target": "roadmap complete — v0.1 prototype → v2.0 COMPOSE + OBSERVE all shipped; package npm-publishable",
   "stats": {
     "base_skills": 3,
     "domain_skills": 5,
@@ -15,7 +15,7 @@
     "event_types": 4,
     "compose_patterns": 6,
     "cli_commands": 19,
-    "tests": 120,
+    "tests": 123,
     "npm_runtime_deps": 4
   },
   "providers": [

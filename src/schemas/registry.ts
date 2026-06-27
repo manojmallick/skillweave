@@ -3,8 +3,10 @@
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { packagePath } from "../pkg-path.js";
 
-export const DEFAULT_REGISTRY_DIR = process.env.SKILLWEAVE_SCHEMA_DIR ?? join("schemas", "registry");
+export const DEFAULT_REGISTRY_DIR =
+  process.env.SKILLWEAVE_SCHEMA_DIR ?? packagePath("schemas", "registry");
 
 export interface SchemaRef {
   name: string;
