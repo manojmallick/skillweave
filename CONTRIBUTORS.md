@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v2.0.2)
+
+- Published to npm — tag-gated publish workflow, graceful CLI errors on a bad `--doc`/`--input` file, and a README license (#49)
+
 ## Recent Contributors (v2.0.1)
 
 - npm-publishable package — compiled `dist/` build, `main`/`exports`/`types`/`files`, package-relative data resolution, and a dist-first `skillweave` bin (#43)
