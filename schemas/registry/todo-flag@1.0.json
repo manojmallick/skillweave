@@ -1,0 +1,11 @@
+{
+  "$id": "todo-flag@1.0",
+  "type": "object",
+  "properties": {
+    "block_id": { "type": "string" },
+    "marker": { "type": "string" },
+    "text": { "type": "string" }
+  },
+  "required": ["block_id", "marker", "text"],
+  "additionalProperties": false
+}

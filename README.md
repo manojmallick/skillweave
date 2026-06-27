@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 🧪 [Examples](examples/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v2.0.2** — published to npm (`npm i skillweave`); the v0.1 → v2.0 roadmap is complete (COMPOSE + OBSERVE: all composition patterns + a local-first observability layer). This patch also makes the CLI fail gracefully on a bad `--doc`/`--input` file.
+**Latest: v2.1.0** — a sixth skill (`todo-flagger`) as a worked example of authoring one, plus eight runnable [examples](examples/). On npm: `npm i skillweave`. (The v0.1 → v2.0 roadmap — COMPOSE + OBSERVE and every primitive — is complete.)
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (126 tests).
+Run the tests with `npm test` (130 tests).
 
 ## CLI
 
