@@ -100,6 +100,20 @@ function suggestSkill(name: string): string {
   return hit ? ` — did you mean '${hit}'?` : "";
 }
 
+/** Read a user-supplied file, surfacing a clean error (never throws) — null on failure. */
+function readArgFile(path: string, label: string): string | null {
+  if (!existsSync(path)) {
+    console.error(`${label}: file not found: ${path}`);
+    return null;
+  }
+  try {
+    return readFileSync(path, "utf8");
+  } catch (err) {
+    console.error(`${label}: cannot read ${path} — ${(err as Error).message}`);
+    return null;
+  }
+}
+
 function makeState(inject: State["_meta"]["inject"], raw: string): State {
   const runId = `run-${new Date().toISOString().replace(/[:.]/g, "-")}`;
   return {
@@ -124,12 +138,16 @@ async function cmdRun(rest: string[]): Promise<number> {
   }
 
   const inject = (flags.inject as State["_meta"]["inject"]) ?? "none";
-  const raw =
-    inject === "coverage"
-      ? THIN_DOC
-      : typeof flags.doc === "string"
-        ? readFileSync(flags.doc, "utf8")
-        : SAMPLE_DOC;
+  let raw: string;
+  if (inject === "coverage") {
+    raw = THIN_DOC;
+  } else if (typeof flags.doc === "string") {
+    const doc = readArgFile(flags.doc, "run");
+    if (doc === null) return 2;
+    raw = doc;
+  } else {
+    raw = SAMPLE_DOC;
+  }
 
   const state = makeState(inject, raw);
   const outcome = await runPipeline(pipeline, state, judgeExecutorLabel(), {
@@ -179,7 +197,15 @@ async function cmdTest(rest: string[]): Promise<number> {
 
   const state = makeState("none", SAMPLE_DOC);
   if (typeof flags.input === "string") {
-    const input = JSON.parse(readFileSync(flags.input, "utf8")) as Partial<State>;
+    const raw = readArgFile(flags.input, "test");
+    if (raw === null) return 2;
+    let input: Partial<State>;
+    try {
+      input = JSON.parse(raw) as Partial<State>;
+    } catch (err) {
+      console.error(`test: invalid JSON in ${flags.input} — ${(err as Error).message}`);
+      return 2;
+    }
     Object.assign(state, input, { _meta: state._meta });
   }
 
@@ -427,7 +453,12 @@ function cmdCheckPermissions(): number {
 async function cmdVerify(rest: string[]): Promise<number> {
   const { flags } = parseArgs(rest);
   if (typeof flags.context === "string") process.env.SIGMAP_CONTEXT_DIR = flags.context;
-  const input = typeof flags.input === "string" ? readFileSync(flags.input, "utf8") : undefined;
+  let input: string | undefined;
+  if (typeof flags.input === "string") {
+    const doc = readArgFile(flags.input, "verify");
+    if (doc === null) return 2;
+    input = doc;
+  }
 
   const result = await runSigMapVerify({ input });
   console.log(`sigmap-verify: ${result.status}`);

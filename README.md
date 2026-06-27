@@ -186,3 +186,7 @@ test/                      node:test suite (npm test)
 
 Artifacts land in `traces/` (NDJSON + per-skill checkpoints) and
 `.context/skillweave-memory.ndjson` (the learning log). Both are gitignored.
+
+## License
+
+MIT © 2026 Manoj Mallick · Made in Amsterdam
