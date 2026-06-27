@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v2.0.0)
+
+- COMPOSE + OBSERVE primitives — all composition patterns (sequential/parallel/map/reduce/conditional/loop) + DAG-layer resolution, plus threshold alerting rules, a pipeline visualiser (`skillweave visualise`), and A/B score comparison (#39)
+
 ## Recent Contributors (v1.3.0)
 
 - MEMORY primitive — an adaptive `MemoryStore` on `.context/` with a decay model, last-write-wins conflict log, cross-session failure-pattern learning, per-skill read/write scope, and the `skillweave memory` command (#36)

@@ -35,6 +35,7 @@ npm run cli -- <command> [args]   # or: npx skillweave <command> [args]
 | `install <skill>` | Look up a published skill in the registry |
 | `registry [list]` | List published skills grouped by tier |
 | `memory [pipeline]` | Report the learning trend + failure patterns from past runs |
+| `visualise <pipeline.yaml> [--mermaid]` | Render a pipeline as an ASCII or Mermaid diagram |
 
 The `npm start` entrypoint still runs the built-in `document-grounding` chain directly.
 
@@ -308,6 +309,27 @@ npm run cli -- memory
 The same data is available in-process via `MemoryStore` (`record` / `recall` / `stats`) and
 `failurePatterns` / `recommend` from the package entry.
 
+## `visualise`
+
+Renders a pipeline as a text diagram — an ASCII flow by default, or a Mermaid flowchart with
+`--mermaid` (paste into any Mermaid renderer). Part of the [OBSERVE](/guide/observe) layer.
+
+```bash
+npm run cli -- visualise pipelines/document-grounding.pipeline.yaml
+# document-grounding v0.3.0  (documents)
+# trigger: manual
+# parse-input  →  validate-coverage  →  extract-highlights  →  memory-update
+# events:
+#   low_confidence_detected → warning [trace-log]
+#   skill_failed → failure [trace-log, webhook] (halt)
+
+npm run cli -- visualise pipelines/document-grounding.pipeline.yaml --mermaid
+# flowchart TD
+#   ...
+```
+
+Exits 0 on success, 2 when no pipeline file is given. Available in-process as `visualise()`.
+
 ## Provider selection
 
 The boundary judge picks a provider from environment variables — see the
@@ -323,7 +345,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (108 tests) |
+| `npm test` | `node:test` suite (120 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 
