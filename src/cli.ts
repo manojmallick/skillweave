@@ -27,6 +27,7 @@ import { loadPipeline, PipelineError, validatePipelineFile } from "./pipeline-lo
 import { getSkill, listSkills } from "./registry.js";
 import { closest, runDoctor } from "./dx/index.js";
 import { MemoryStore, recommend } from "./memory/index.js";
+import { visualise } from "./observe/index.js";
 import { runSigMapVerify } from "./sigmap-verify.js";
 import { SAMPLE_DOC, THIN_DOC } from "./sample-doc.js";
 import type { State } from "./types.js";
@@ -80,6 +81,7 @@ Usage:
   skillweave install <skill>
   skillweave registry [list]
   skillweave memory [pipeline]
+  skillweave visualise <pipeline.yaml> [--mermaid]
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).
@@ -89,7 +91,7 @@ New here? Run \`skillweave doctor\`.`;
 const COMMANDS = [
   "doctor", "run", "validate", "test", "list", "trace", "new", "verify",
   "health", "sigmap", "providers", "neutral", "check-schemas", "check-permissions",
-  "publish", "install", "registry", "memory", "version", "help",
+  "publish", "install", "registry", "memory", "visualise", "version", "help",
 ];
 
 /** "did you mean?" hint for an unknown skill name (empty when nothing is close). */
@@ -521,6 +523,24 @@ function cmdMemory(rest: string[]): number {
   return 0;
 }
 
+function cmdVisualise(rest: string[]): number {
+  const { positionals, flags } = parseArgs(rest);
+  const path = positionals[0];
+  if (!path) {
+    console.error("visualise: missing <pipeline.yaml>");
+    return 2;
+  }
+  let pipeline;
+  try {
+    pipeline = loadPipeline(path);
+  } catch (err) {
+    console.error(err instanceof PipelineError ? err.message : String(err));
+    return 1;
+  }
+  console.log(visualise(pipeline, { format: flags.mermaid ? "mermaid" : "ascii" }));
+  return 0;
+}
+
 function cmdDoctor(): number {
   const report = runDoctor();
   console.log(`skillweave v${VERSION} — doctor\n`);
@@ -575,6 +595,8 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdRegistry();
     case "memory":
       return cmdMemory(rest);
+    case "visualise":
+      return cmdVisualise(rest);
     case "version":
     case "--version":
     case "-v":
