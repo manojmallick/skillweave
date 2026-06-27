@@ -108,3 +108,10 @@ lower bounds, not best-case figures. The headline results are that the judge cau
 npm run bench           # print the table
 npm run bench -- --save # also write metrics into version.json
 ```
+
+## See it in a second skill
+
+[`summarize`](https://github.com/manojmallick/skillweave/blob/main/src/skills/summarize.ts) is a
+probabilistic extractive summarizer that exercises this whole layer: it returns a `confidence`
+and verbatim `judge_blocks`, and on a retry it takes fewer, stronger sentences so a
+low-confidence first attempt recovers. Watch it live with `npx tsx examples/summarize.ts`.

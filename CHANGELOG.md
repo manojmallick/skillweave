@@ -6,6 +6,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-06-27
+
+### Added
+- `summarize` skill (#60) — a **probabilistic** extractive summarizer: ranks content blocks by salience and takes the top ones verbatim (so the auto-judge sees grounded output), reporting a confidence. On a retry it takes fewer, stronger sentences, so a low-confidence first attempt recovers — exercising the full reliability layer (confidence routing → auto-judge → retry-with-negative-context) from a second skill (previously only `extract-highlights` did).
+- `State` gains a `DocSummary` type + `summary?` field; new `doc-summary@1.0` registry schema (additive), pinned as the skill's `output_schema`; a runnable `examples/summarize.ts`.
+
 ## [2.1.0] — 2026-06-27
 
 ### Added

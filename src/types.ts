@@ -39,6 +39,12 @@ export interface TodoFlag {
   text: string;
 }
 
+/** An extractive summary — the most salient sentences, verbatim (output of summarize). */
+export interface DocSummary {
+  text: string; // the selected sentences joined
+  sentences: string[]; // the selected sentences (verbatim from the source)
+}
+
 /** Groundedness verdict (output of boundary-judge). */
 export interface JudgeVerdict {
   score: number; // 0.0 – 1.0
@@ -67,6 +73,7 @@ export interface State {
   coverage?: Coverage;
   highlights?: Highlight[];
   flags?: TodoFlag[];
+  summary?: DocSummary;
   judge?: JudgeVerdict;
   memory?: MemorySummary;
   _meta: {

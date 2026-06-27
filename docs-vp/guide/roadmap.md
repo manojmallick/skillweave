@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 130 tests passing · 3 frozen base skills · 6 domain skills · 3 SigMap adapters · 4 provider adapters · 7 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
+**Stats:** 134 tests passing · 3 frozen base skills · 7 domain skills · 3 SigMap adapters · 4 provider adapters · 8 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -187,6 +187,17 @@ a `todo-flag@1.0` registry schema, and grades **9/9 → verified**. Plus eight r
 
 **Tags:** todo-flagger · new STATE field · todo-flag@1.0 schema · examples/ · Examples guide
 **Impact:** 130-test `node:test` suite; 6 domain skills · 7 registry schemas; a copy-paste template for new skills.
+
+### v2.2.0 — summarize skill ✓
+
+A seventh domain skill, `summarize` — a **probabilistic** extractive summarizer that ranks
+content blocks by salience and takes the top ones verbatim, so the auto-judge sees grounded
+output. On a retry it takes fewer, stronger sentences, so a low-confidence first attempt
+recovers — exercising the full [reliability layer](/guide/reliability) (confidence routing →
+auto-judge → retry-with-negative-context) from a second skill (only `extract-highlights` did).
+
+**Tags:** summarize · probabilistic · DocSummary · doc-summary@1.0 · confidence routing · retry-recovers
+**Impact:** 134-test `node:test` suite; 7 domain skills (2 probabilistic) · 8 registry schemas.
 
 ## Planned
 

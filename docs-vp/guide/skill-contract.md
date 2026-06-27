@@ -105,7 +105,11 @@ export const extractHighlights: Skill = {
 ## Worked example
 
 [`todo-flagger`](https://github.com/manojmallick/skillweave/blob/main/src/skills/todo-flagger.ts)
-is a complete, registered skill you can copy: it flags content blocks containing a
-`TODO` / `FIXME` / `XXX` marker, extends `State` with a new `flags` field, pins a
-`todo-flag@1.0` schema, and grades **9/9 → verified**. Run it with
-`npx tsx examples/todo-flagger.ts`, and see the [Examples](/guide/examples) guide for more.
+is a complete, registered **deterministic** skill you can copy: it flags content blocks
+containing a `TODO` / `FIXME` / `XXX` marker, extends `State` with a new `flags` field, pins a
+`todo-flag@1.0` schema, and grades **9/9 → verified**. For the **probabilistic** side, see
+[`summarize`](https://github.com/manojmallick/skillweave/blob/main/src/skills/summarize.ts) —
+it returns a `confidence` and `judge_blocks`, so the orchestrator's
+[reliability layer](/guide/reliability) (confidence routing · auto-judge · retry) applies.
+Run them with `npx tsx examples/todo-flagger.ts` / `examples/summarize.ts`, and see the
+[Examples](/guide/examples) guide for more.

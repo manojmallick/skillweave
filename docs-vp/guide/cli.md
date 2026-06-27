@@ -220,7 +220,7 @@ major. Exits non-zero on a breaking change within a major.
 ```bash
 npm run cli -- check-schemas
 #   content-block 1.0→1.1: +lang
-# ✓ 7 schemas valid · 6 pins resolve · additive-only holds
+# ✓ 8 schemas valid · 7 pins resolve · additive-only holds
 ```
 
 ## `check-permissions`
@@ -345,7 +345,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (130 tests) |
+| `npm test` | `node:test` suite (134 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 

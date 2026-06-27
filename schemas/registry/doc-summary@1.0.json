@@ -1,0 +1,10 @@
+{
+  "$id": "doc-summary@1.0",
+  "type": "object",
+  "properties": {
+    "text": { "type": "string" },
+    "sentences": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["text", "sentences"],
+  "additionalProperties": false
+}

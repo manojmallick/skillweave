@@ -5,11 +5,20 @@ import { extractHighlights } from "./skills/extract-highlights.js";
 import { loadContext } from "./skills/load-context.js";
 import { memoryUpdate } from "./skills/memory-update.js";
 import { parseInput } from "./skills/parse-input.js";
+import { summarize } from "./skills/summarize.js";
 import { todoFlagger } from "./skills/todo-flagger.js";
 import { validateCoverage } from "./skills/validate-coverage.js";
 import type { Skill } from "./types.js";
 
-const ALL: Skill[] = [loadContext, parseInput, validateCoverage, extractHighlights, memoryUpdate, todoFlagger];
+const ALL: Skill[] = [
+  loadContext,
+  parseInput,
+  validateCoverage,
+  extractHighlights,
+  memoryUpdate,
+  todoFlagger,
+  summarize,
+];
 
 export const SKILLS: Record<string, Skill> = Object.fromEntries(
   ALL.map((s) => [s.name, s]),
