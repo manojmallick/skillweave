@@ -136,6 +136,10 @@ export interface Skill {
   output_schema?: string;
   /** Side-effect capabilities this skill needs (absent == pure, no effects). */
   capabilities?: Capability[];
+  /** MEMORY keys this skill may read from past executions. */
+  memory_reads?: string[];
+  /** MEMORY keys this skill may write (enforced by a scoped MemoryStore). */
+  memory_writes?: string[];
   /** Executes the skill. `retry` carries negative context on a re-invocation. */
   run: (state: State, retry?: RetryContext) => Promise<SkillResult>;
 }

@@ -14,4 +14,5 @@ export * from "./catalog/index.js";
 export * from "./dx/index.js";
 export * from "./events/index.js";
 export * from "./triggers/index.js";
+export * from "./memory/index.js";
 export { VERSION } from "./version.js";
