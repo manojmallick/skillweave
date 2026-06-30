@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { Type } from "@google/genai";
 import {
   AnthropicAdapter,
   buildAdapters,
@@ -9,6 +10,7 @@ import {
   runWithFallback,
   type ResolvedTarget,
 } from "../src/providers/index.js";
+import { toGemini } from "../src/providers/google.adapter.js";
 
 test("loadProfile reads capability models from YAML", () => {
   const models = loadProfile("anthropic");
@@ -29,6 +31,37 @@ test("supports + selectModel honor tier and capabilities", () => {
   const ollama = new OllamaAdapter(loadProfile("ollama"));
   assert.equal(ollama.supports(["structured_output"]), false);
   assert.equal(ollama.selectModel(undefined, ["structured_output"]), null);
+});
+
+test("toGemini maps an array schema to Type.ARRAY with translated items (regression)", () => {
+  // Regression: arrays previously fell through to the string default, so Gemini
+  // returned a comma-joined string instead of a JSON array.
+  const out = toGemini({ type: "array", items: { type: "string" } }) as Record<string, unknown>;
+  assert.equal(out.type, Type.ARRAY);
+  assert.deepEqual(out.items, { type: Type.STRING });
+});
+
+test("toGemini maps an object with an array property end-to-end", () => {
+  const out = toGemini({
+    type: "object",
+    properties: { items: { type: "array", items: { type: "string" } }, confidence: { type: "number" } },
+    required: ["items", "confidence"],
+  }) as Record<string, unknown>;
+  assert.equal(out.type, Type.OBJECT);
+  const props = out.properties as Record<string, Record<string, unknown>>;
+  assert.equal(props.items.type, Type.ARRAY);
+  assert.deepEqual(props.items.items, { type: Type.STRING });
+  assert.equal(props.confidence.type, Type.NUMBER);
+});
+
+test("toGemini maps an array of objects (nested)", () => {
+  const out = toGemini({
+    type: "array",
+    items: { type: "object", properties: { text: { type: "string" } }, required: ["text"] },
+  }) as Record<string, unknown>;
+  assert.equal(out.type, Type.ARRAY);
+  const items = out.items as Record<string, unknown>;
+  assert.equal(items.type, Type.OBJECT);
 });
 
 test("resolveTargets resolves primary + fallback in order, filtering by requirement", () => {
