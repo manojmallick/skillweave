@@ -52,7 +52,7 @@ console.log("per-item summaries:");
 perItem.forEach((s, i) => console.log(`  ${i + 1}. ${s}`));
 
 // reducePattern: fold them into one digest.
-const digest = await reducePattern(perItem, async (acc, s, i) => `${acc}\n- ${s}`, "## Release digest");
+const digest = await reducePattern(perItem, async (acc, s) => `${acc}\n- ${s}`, "## Release digest");
 console.log("\n" + digest);
 
 // parallel: independent post-processing stages, run concurrently (barrier).
