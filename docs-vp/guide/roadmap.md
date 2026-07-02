@@ -8,7 +8,7 @@ description: SkillWeave version roadmap — from the v0.1.0 prototype chain to t
 SkillWeave generalises SigMap's proven primitives into an open standard, shipped
 version by version. Stats below reflect the current build.
 
-**Stats:** 134 tests passing · 3 frozen base skills · 7 domain skills · 3 SigMap adapters · 4 provider adapters · 8 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
+**Stats:** 137 tests passing · 3 frozen base skills · 7 domain skills · 3 SigMap adapters · 4 provider adapters · 8 registry schemas · 4 capabilities · 3 trust tiers · 7 trigger types · 4 event types · 6 composition patterns · 19 CLI commands · 4 runtime deps
 
 ## Shipped
 
@@ -198,6 +198,18 @@ auto-judge → retry-with-negative-context) from a second skill (only `extract-h
 
 **Tags:** summarize · probabilistic · DocSummary · doc-summary@1.0 · confidence routing · retry-recovers
 **Impact:** 134-test `node:test` suite; 7 domain skills (2 probabilistic) · 8 registry schemas.
+
+### v2.2.1 — Gemini array fix + use-case examples ✓
+
+Fixes structured **array** output on the Google provider: `toGemini()` now maps array JSON
+schemas to `Type.ARRAY` (they previously fell through to the string default, so Gemini
+returned a comma-joined string — breaking extraction and the boundary judge on Gemini). Adds
+[`examples/use-cases/`](/guide/examples) — six runnable real-world scenarios (support triage,
+code-review gate, secret-safe logs, batch digest, nightly report, and a live-LLM A/B) that
+show what the runtime adds over a plain prompt.
+
+**Tags:** Gemini Type.ARRAY · structured array output · examples/use-cases · live-LLM A/B
+**Impact:** 137-test `node:test` suite; structured array output works on all three providers.
 
 ## Planned
 

@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.2.1",
   "stage": "published",
   "roadmap_target": "roadmap complete — v0.1 prototype → v2.0 COMPOSE + OBSERVE all shipped; published to npm",
   "stats": {
@@ -15,7 +15,7 @@
     "event_types": 4,
     "compose_patterns": 6,
     "cli_commands": 19,
-    "tests": 134,
+    "tests": 137,
     "npm_runtime_deps": 4
   },
   "providers": [
