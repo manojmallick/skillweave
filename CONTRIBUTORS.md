@@ -3,6 +3,10 @@
 SkillWeave is built and maintained by [Manoj Mallick](https://github.com/manojmallick)
 (Amsterdam).
 
+## Recent Contributors (v2.2.1)
+
+- Gemini provider fix — array JSON schemas translate to `Type.ARRAY` (structured array output no longer breaks on Google), plus `examples/use-cases/` real-world scenarios (#64)
+
 ## Recent Contributors (v2.2.0)
 
 - `summarize` skill — a probabilistic extractive summarizer that exercises the reliability layer (confidence routing · auto-judge · retry-with-negative-context), 9/9 verified (#60)

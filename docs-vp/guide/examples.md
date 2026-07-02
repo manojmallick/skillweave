@@ -37,3 +37,24 @@ import { runSigMapVerify, runPipeline, EventBus, MemoryStore, sequential } from 
 ```
 
 See the [CLI guide](/guide/cli) for the command-line equivalents.
+
+## Real-world use cases
+
+[`examples/use-cases/`](https://github.com/manojmallick/skillweave/tree/main/examples/use-cases)
+holds larger scenarios that answer *"why not just write a plain skill / prompt?"* — each
+shows what the runtime adds around the model. The first five run fully offline; the sixth is a
+head-to-head on a real LLM (needs a provider key).
+
+| Scenario | Feature |
+|---|---|
+| [01-support-triage](https://github.com/manojmallick/skillweave/blob/main/examples/use-cases/01-support-triage.ts) | reliability — confidence routing + auto-judge + retry |
+| [02-code-review-gate](https://github.com/manojmallick/skillweave/blob/main/examples/use-cases/02-code-review-gate.ts) | contracts + hard assertions + memory across runs |
+| [03-secret-safe-logs](https://github.com/manojmallick/skillweave/blob/main/examples/use-cases/03-secret-safe-logs.ts) | security — capabilities + sandbox + secret redaction |
+| [04-batch-digest](https://github.com/manojmallick/skillweave/blob/main/examples/use-cases/04-batch-digest.ts) | composition — map · reduce · parallel · DAG |
+| [05-nightly-report](https://github.com/manojmallick/skillweave/blob/main/examples/use-cases/05-nightly-report.ts) | production wrapper — trigger + events + observability |
+| [06-ab-llm](https://github.com/manojmallick/skillweave/blob/main/examples/use-cases/06-ab-llm.ts) | live-LLM A/B — a raw call vs. the SkillWeave-wrapped skill |
+
+```bash
+npx tsx examples/use-cases/01-support-triage.ts
+npx tsx examples/use-cases/06-ab-llm.ts --hard   # needs ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY
+```

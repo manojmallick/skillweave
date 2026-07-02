@@ -6,6 +6,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.1] — 2026-07-02
+
+### Fixed
+- Gemini provider (#64): array JSON schemas now translate to `Type.ARRAY` with translated items. Previously `toGemini()` had no `array` case, so array schemas fell through to the string default and Gemini returned a comma-joined string instead of a JSON array — breaking any structured array output (extraction, the boundary judge) on the Google provider. Adds regression tests.
+- `examples/compose.ts` (#64): the `reducePattern` callback signature is `(acc, item)`, not an index.
+
+### Added
+- `examples/use-cases/` (#64) — six runnable real-world scenarios (support triage · code-review gate · secret-safe logs · batch digest · nightly report · a live-LLM A/B) that show what the runtime adds over a plain skill/prompt.
+
 ## [2.2.0] — 2026-06-27
 
 ### Added

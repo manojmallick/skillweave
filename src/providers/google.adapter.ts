@@ -20,7 +20,7 @@ function prim(t: string): Type {
 }
 
 /** Translate a plain JSON Schema into Gemini's responseSchema shape. */
-function toGemini(schema: Record<string, unknown>): GeminiSchema {
+export function toGemini(schema: Record<string, unknown>): GeminiSchema {
   const t = schema.type;
   if (t === "object") {
     const props = (schema.properties ?? {}) as Record<string, Record<string, unknown>>;
@@ -30,6 +30,10 @@ function toGemini(schema: Record<string, unknown>): GeminiSchema {
       required: (schema.required as string[]) ?? Object.keys(props),
       propertyOrdering: (schema.required as string[]) ?? Object.keys(props),
     };
+  }
+  if (t === "array") {
+    const items = (schema.items ?? { type: "string" }) as Record<string, unknown>;
+    return { type: Type.ARRAY, items: toGemini(items) };
   }
   if (Array.isArray(t)) {
     const base = t.find((x) => x !== "null") ?? "string";
