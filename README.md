@@ -11,7 +11,7 @@
 
 📖 **Docs:** [manojmallick.github.io/skillweave](https://manojmallick.github.io/skillweave/) · 🧪 [Examples](examples/) · 📋 [Changelog](CHANGELOG.md) · 🗺️ [Roadmap](docs-vp/guide/roadmap.md)
 
-**Latest: v2.2.0** — a probabilistic `summarize` skill that exercises the reliability layer (confidence routing → auto-judge → retry), alongside the deterministic `todo-flagger`. On npm: `npm i skillweave`. (The v0.1 → v2.0 roadmap — COMPOSE + OBSERVE and every primitive — is complete.)
+**Latest: v2.2.1** — fixes structured **array** output on the Gemini provider, and adds [`examples/use-cases/`](examples/use-cases/) — six real-world scenarios showing what the runtime adds over a plain prompt. On npm: `npm i skillweave`. (The v0.1 → v2.0 roadmap — COMPOSE + OBSERVE and every primitive — is complete.)
 
 A runnable proof of the SkillWeave mechanics: a 4-skill chain that maps SigMap's
 proven **ask → validate → judge → learn** pattern onto a new domain (documents),
@@ -54,7 +54,7 @@ npm start -- --inject coverage       # too-thin input → coverage assertion HAL
 ```
 
 Run `npm start` twice to see `memory-update` report the score trend across runs.
-Run the tests with `npm test` (134 tests).
+Run the tests with `npm test` (137 tests).
 
 ## CLI
 

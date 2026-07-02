@@ -345,7 +345,7 @@ JUDGE_PROVIDER=gemini npm run cli -- run <pipeline>    # force a provider
 | Command | What it does |
 |---------|--------------|
 | `npm start [-- --doc <path>] [-- --inject <mode>]` | Run the built-in `document-grounding` chain |
-| `npm test` | `node:test` suite (134 tests) |
+| `npm test` | `node:test` suite (137 tests) |
 | `npm run bench` | Reliability benchmark (writes metrics to `version.json` with `--save`) |
 | `npm run typecheck` | `tsc --noEmit` |
 
