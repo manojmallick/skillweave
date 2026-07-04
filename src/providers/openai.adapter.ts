@@ -33,11 +33,25 @@ export class OpenAIAdapter extends BaseAdapter {
         : {}),
     });
 
-    const text = completion.choices[0]?.message.content;
-    if (!text) throw new Error("empty OpenAI response");
+    const raw = completion.choices[0]?.message.content;
+    if (!raw) throw new Error("empty OpenAI response");
+    // OpenAI-compatible proxies (e.g. gateways fronting Gemini/Llama) often
+    // ignore `response_format: json_schema` and wrap JSON in a ```json fence.
+    // Strip a leading/trailing code fence so structured output still parses.
+    const text = req.json_schema ? stripCodeFence(raw) : raw;
     const input = completion.usage?.prompt_tokens ?? 0;
     const output = completion.usage?.completion_tokens ?? 0;
 
     return { text, model: model.id, input_tokens: input, output_tokens: output, cost: this.costFor(model, input, output) };
   }
+}
+
+/** Strip a single wrapping ```/```json code fence, if present. */
+function stripCodeFence(s: string): string {
+  const t = s.trim();
+  if (!t.startsWith("```")) return t;
+  return t
+    .replace(/^```[a-zA-Z0-9]*\s*\n?/, "")
+    .replace(/\n?```\s*$/, "")
+    .trim();
 }
