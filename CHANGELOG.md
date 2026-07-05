@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.2] — 2026-07-05
+
+### Fixed
+- OpenAI provider (#69): strip a wrapping ` ```json ` code fence from `json_schema` responses before parsing. OpenAI-compatible proxies and gateways (e.g. those fronting Gemini/Llama) commonly ignore `response_format: json_schema` and return fenced JSON, which made the boundary judge's strict `JSON.parse` throw and silently fall back to the heuristic. Structured output now works through these providers; plain (non-schema) completions are untouched.
+
 ## [2.2.1] — 2026-07-02
 
 ### Fixed
