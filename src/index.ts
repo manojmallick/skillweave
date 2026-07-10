@@ -17,4 +17,5 @@ export * from "./triggers/index.js";
 export * from "./memory/index.js";
 export * from "./compose/index.js";
 export * from "./observe/index.js";
+export * from "./eval/index.js";
 export { VERSION } from "./version.js";
