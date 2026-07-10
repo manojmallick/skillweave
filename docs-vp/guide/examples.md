@@ -27,6 +27,7 @@ npx tsx examples/compose.ts
 | [custom-skill.ts](https://github.com/manojmallick/skillweave/blob/main/examples/custom-skill.ts) | [Skill authoring](/guide/skill-contract) + [registry](/guide/registry) | author a skill → `gradeSkill` (9/9 → verified) → run → `publishSkill` / `installSkill` |
 | [todo-flagger.ts](https://github.com/manojmallick/skillweave/blob/main/examples/todo-flagger.ts) | [Skill authoring](/guide/skill-contract) | the registered `todo-flagger` skill — extends STATE with a `flags` field, grades 9/9 verified |
 | [summarize.ts](https://github.com/manojmallick/skillweave/blob/main/examples/summarize.ts) | [Reliability layer](/guide/reliability) | the probabilistic `summarize` skill — confidence routing → auto-judge → retry recovers a low-confidence attempt |
+| [eval.ts](https://github.com/manojmallick/skillweave/blob/main/examples/eval.ts) | Behavioral evaluation | a `runEval` harness — grade a pipeline over cases × trials; pass-rate vs. a CI threshold |
 | [security.ts](https://github.com/manojmallick/skillweave/blob/main/examples/security.ts) | [SECURITY](/guide/security) | `checkSkillPermissions` (default-deny) · `guardWrite` sandbox · `redactSecrets` |
 
 Each script imports from `../src/index.js` so it runs in the repo with no build step. As a
