@@ -59,7 +59,10 @@ export default defineConfig({
       },
       {
         text: "More",
-        items: [{ text: "Roadmap", link: "/guide/roadmap" }],
+        items: [
+          { text: "Roadmap", link: "/guide/roadmap" },
+          { text: "Learning resources", link: "/guide/learning-resources" },
+        ],
       },
     ],
 
