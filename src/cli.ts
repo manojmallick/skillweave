@@ -28,6 +28,7 @@ import { getSkill, listSkills } from "./registry.js";
 import { closest, runDoctor } from "./dx/index.js";
 import { MemoryStore, recommend } from "./memory/index.js";
 import { visualise } from "./observe/index.js";
+import { builtinEval, runEval } from "./eval/index.js";
 import { runSigMapVerify } from "./sigmap-verify.js";
 import { SAMPLE_DOC, THIN_DOC } from "./sample-doc.js";
 import type { State } from "./types.js";
@@ -82,6 +83,7 @@ Usage:
   skillweave registry [list]
   skillweave memory [pipeline]
   skillweave visualise <pipeline.yaml> [--mermaid]
+  skillweave eval [--trials <n>] [--threshold <0..1>]
 
 Inject modes: lowconf · hallucination · persistent · coverage
 Judge provider: set ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY (else offline heuristic).
@@ -91,7 +93,7 @@ New here? Run \`skillweave doctor\`.`;
 const COMMANDS = [
   "doctor", "run", "validate", "test", "list", "trace", "new", "verify",
   "health", "sigmap", "providers", "neutral", "check-schemas", "check-permissions",
-  "publish", "install", "registry", "memory", "visualise", "version", "help",
+  "publish", "install", "registry", "memory", "visualise", "eval", "version", "help",
 ];
 
 /** "did you mean?" hint for an unknown skill name (empty when nothing is close). */
@@ -572,6 +574,30 @@ function cmdVisualise(rest: string[]): number {
   return 0;
 }
 
+async function cmdEval(rest: string[]): Promise<number> {
+  const { flags } = parseArgs(rest);
+  const trials = typeof flags.trials === "string" ? Number(flags.trials) : undefined;
+  const threshold = typeof flags.threshold === "string" ? Number(flags.threshold) : undefined;
+  if ((trials != null && !Number.isFinite(trials)) || (threshold != null && !Number.isFinite(threshold))) {
+    console.error("eval: --trials and --threshold must be numbers");
+    return 2;
+  }
+
+  const report = await runEval(builtinEval({ trials, threshold }));
+  console.log(`eval: ${report.name} — ${report.trials} trial(s)/case · threshold ${report.threshold}\n`);
+  for (const c of report.cases) {
+    console.log(
+      `  ${c.ok ? "✓" : "✗"} ${c.name.padEnd(24)} pass-rate ${(c.passRate * 100).toFixed(0)}%   avg ${c.avgScore}   (${c.passed}/${c.trials})`,
+    );
+  }
+  console.log(
+    report.ok
+      ? `\n✓ eval passed — mean pass-rate ${(report.passRate * 100).toFixed(0)}%`
+      : `\n✗ eval failed — a case fell below the ${report.threshold} threshold`,
+  );
+  return report.ok ? 0 : 1;
+}
+
 function cmdDoctor(): number {
   const report = runDoctor();
   console.log(`skillweave v${VERSION} — doctor\n`);
@@ -626,6 +652,8 @@ export async function cli(argv: string[]): Promise<number> {
       return cmdRegistry();
     case "memory":
       return cmdMemory(rest);
+    case "eval":
+      return cmdEval(rest);
     case "visualise":
       return cmdVisualise(rest);
     case "version":

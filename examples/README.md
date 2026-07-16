@@ -15,6 +15,7 @@ npx tsx examples/observe.ts
 npx tsx examples/custom-skill.ts
 npx tsx examples/todo-flagger.ts
 npx tsx examples/summarize.ts
+npx tsx examples/eval.ts
 npx tsx examples/security.ts
 ```
 
@@ -33,6 +34,7 @@ npx tsx examples/security.ts
 | [custom-skill.ts](custom-skill.ts) | Skill authoring + registry | Define a skill · `gradeSkill` (quality gate → tier) · run it · `publishSkill` / `installSkill` |
 | [todo-flagger.ts](todo-flagger.ts) | Skill authoring (new STATE field) | A registered `todo-flagger` skill — flags TODO/FIXME/XXX blocks; grades 9/9 verified |
 | [summarize.ts](summarize.ts) | Probabilistic skill + reliability | A registered `summarize` skill — confidence routing → auto-judge → retry recovers a low-confidence attempt |
+| [eval.ts](eval.ts) | Behavioral eval | A `runEval` harness — grade a pipeline over cases × trials with deterministic + judge graders; pass-rate vs. a CI threshold |
 | [security.ts](security.ts) | SECURITY | `capabilities` · `checkSkillPermissions` (default-deny) · `guardWrite` sandbox · `redactSecrets` |
 
 Artifacts (traces, the memory log, a demo registry) land in gitignored dirs and are safe to
